@@ -52,4 +52,14 @@ export default function decorate(block) {
 
   block.replaceChildren(grid);
   observeReveal(block);
+
+  // Reveal cards already visible in the viewport on load (bypasses scroll threshold)
+  requestAnimationFrame(() => {
+    block.querySelectorAll('.hv-reveal').forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      if (rect.height > 0 && rect.top < window.innerHeight) {
+        el.classList.add('hv-visible');
+      }
+    });
+  });
 }

@@ -16,21 +16,22 @@
   display: block;
   text-decoration: none;
   background: var(--hv-color-dark);
+  aspect-ratio: 3 / 4;
   opacity: 0;
   transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 .hv-category-callouts .hv-callout-col.hv-visible {
   opacity: 1;
   transform: none;
-  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-.hv-category-callouts .hv-callout-col-img,
-.hv-category-callouts .hv-callout-col-img picture {
+.hv-category-callouts .hv-callout-col-img {
+  position: absolute;
+  inset: 0;
   display: block;
-  width: 100%;
-  aspect-ratio: 3 / 4;
+  overflow: hidden;
 }
 
 .hv-category-callouts .hv-callout-col-img img {
