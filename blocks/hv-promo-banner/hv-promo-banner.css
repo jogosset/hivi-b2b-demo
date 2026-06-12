@@ -1,8 +1,6 @@
 .hv-promo-banner {
   position: relative;
   overflow: hidden;
-  min-height: 380px;
-  display: flex;
 }
 
 .hv-promo-banner .hv-promo-img,
@@ -21,12 +19,15 @@
   filter: brightness(0.65);
 }
 
+/* Overlay is in normal flow — its content sets the banner height, not the other way round.
+   The absolute image stretches to fill whatever height the overlay establishes. */
 .hv-promo-banner .hv-promo-overlay {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
-  padding: var(--spacing-xxlarge) var(--spacing-xxbig);
+  min-height: 380px;
+  padding: var(--spacing-xxbig) var(--spacing-xxbig);
   background: linear-gradient(90deg, rgb(0 0 0 / 55%) 0%, transparent 70%);
 }
 
@@ -34,12 +35,12 @@
   max-width: 560px;
   opacity: 0;
   transform: translateX(-36px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
 }
 
 .hv-promo-banner .hv-promo-content.hv-visible {
   opacity: 1;
   transform: none;
-  transition: opacity 0.65s ease, transform 0.65s ease;
 }
 
 .hv-promo-banner .hv-promo-eyebrow {
@@ -96,13 +97,30 @@
   transition: transform var(--hv-transition-mid), box-shadow var(--hv-transition-mid), background var(--hv-transition-mid);
 }
 
-.hv-promo-banner .hv-btn:hover { transform: translateY(-2px); }
+.hv-promo-banner .hv-btn:hover {
+  transform: translateY(-2px);
+}
 
-.hv-promo-banner .hv-btn-neon { background: var(--hv-color-neon); color: var(--hv-color-dark); }
-.hv-promo-banner .hv-btn-neon:hover { background: var(--hv-color-neon-dim); box-shadow: var(--hv-shadow-neon); }
+.hv-promo-banner .hv-btn-neon {
+  background: var(--hv-color-neon);
+  color: var(--hv-color-dark);
+}
 
-.hv-promo-banner .hv-btn-outline-white { background: transparent; color: var(--hv-color-white); border: 2px solid var(--hv-color-white); }
-.hv-promo-banner .hv-btn-outline-white:hover { background: var(--hv-color-white); color: var(--hv-color-dark); }
+.hv-promo-banner .hv-btn-neon:hover {
+  background: var(--hv-color-neon-dim);
+  box-shadow: var(--hv-shadow-neon);
+}
+
+.hv-promo-banner .hv-btn-outline-white {
+  background: transparent;
+  color: var(--hv-color-white);
+  border: 2px solid var(--hv-color-white);
+}
+
+.hv-promo-banner .hv-btn-outline-white:hover {
+  background: var(--hv-color-white);
+  color: var(--hv-color-dark);
+}
 
 @media (max-width: 600px) {
   .hv-promo-banner .hv-promo-overlay {

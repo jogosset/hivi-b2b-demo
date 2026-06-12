@@ -55,6 +55,15 @@ export default function decorate(block) {
   block.append(overlay);
   observeReveal(block);
 
+  requestAnimationFrame(() => {
+    block.querySelectorAll('.hv-reveal-left, .hv-reveal-right, .hv-reveal').forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      if (rect.height > 0 && rect.top < window.innerHeight) {
+        el.classList.add('hv-visible');
+      }
+    });
+  });
+
   // Parallax-lite
   const scrollHandler = () => {
     const rect = block.getBoundingClientRect();
