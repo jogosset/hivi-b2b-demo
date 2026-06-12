@@ -14,6 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
+export * from './utils';
 export * from './dispatchApiCall';
 export * from './enqueueRequest';
 export * from './errors/mapErrorToCode';

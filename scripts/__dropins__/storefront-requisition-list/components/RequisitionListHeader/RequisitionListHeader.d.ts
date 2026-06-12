@@ -12,12 +12,8 @@ export interface RequisitionListHeaderProps extends HTMLAttributes<HTMLDivElemen
     actions?: {
         onRename?: () => void;
         onDelete?: () => void;
-        onShare?: () => void;
         renameLabel?: string;
         deleteLabel?: string;
-        shareLabel?: string;
-        shareDisabled?: boolean;
-        shareDisabledReason?: string;
     };
 }
 export declare const RequisitionListHeader: FunctionComponent<RequisitionListHeaderProps>;

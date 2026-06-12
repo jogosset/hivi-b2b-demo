@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2026 Adobe
+ *  Copyright 2024 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -21,5 +21,4 @@ export * from './region';
 export * from './order-history-list';
 export * from './store-config';
 export * from './stored-payment-method';
-export * from './admin-assistance-actions';
 //# sourceMappingURL=index.d.ts.map

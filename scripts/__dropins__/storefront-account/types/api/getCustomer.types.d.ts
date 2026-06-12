@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2026 Adobe
+ *  Copyright 2024 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -19,10 +19,7 @@ export interface getCustomerShortResponse {
         customer: {
             custom_attributes: {
                 code: string;
-                value?: string | number | boolean | null;
-                selected_options?: {
-                    value?: string | null;
-                }[];
+                value: string | number | boolean;
             }[];
             firstname: string;
             lastname: string;
@@ -33,7 +30,6 @@ export interface getCustomerShortResponse {
             prefix: string;
             suffix: string;
             created_at: string;
-            allow_remote_shopping_assistance?: boolean;
         };
     };
     errors?: {

@@ -47,7 +47,6 @@ export interface TotalProps {
     subtotal_incl_tax: AmountProps;
 }
 export interface OrderProps {
-    admin_assisted_order?: number | null;
     token: string;
     email: string;
     shipping_method: string;

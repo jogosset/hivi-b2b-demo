@@ -112,9 +112,6 @@ export default async function decorate(block) {
   // State to track if we are in update mode
   let isUpdateMode = false;
 
-  // State to track if the current product/variant is out of stock
-  let isOutOfStock = false;
-
   // Layout
   const fragment = document.createRange()
     .createContextualFragment(`
@@ -497,26 +494,21 @@ export default async function decorate(block) {
       } finally {
         // Reset button text using the helper function which respects the current mode
         updateAddToCartButtonText(addToCart, isUpdateMode, labels);
-        // Re-enable button, unless the current variant is out of stock
+        // Re-enable button
         addToCart.setProps((prev) => ({
           ...prev,
-          disabled: isOutOfStock,
+          disabled: false,
         }));
       }
     },
   })($addToCart);
 
   // Lifecycle Events
-  events.on('pdp/data', (data) => {
-    isOutOfStock = data?.inStock === false;
-    addToCart.setProps((prev) => ({ ...prev, disabled: isOutOfStock }));
-  }, { eager: true });
-
   events.on('pdp/valid', (valid) => {
-    // update add to cart button disabled state based on product selection validity and stock status
+    // update add to cart button disabled state based on product selection validity
     addToCart.setProps((prev) => ({
       ...prev,
-      disabled: isOutOfStock || !valid,
+      disabled: !valid,
     }));
   }, { eager: true });
 

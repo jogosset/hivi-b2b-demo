@@ -12,11 +12,7 @@ declare const _default: {
         "SortBy": {
             "title": "Sort by",
             "lowToHigh": "Low to High",
-            "highToLow": "High to Low",
-            "relevance": "Relevance",
-            "position": "Position",
-            "name": "Product Name",
-            "price": "Price"
+            "highToLow": "High to Low"
         }
     }
 };

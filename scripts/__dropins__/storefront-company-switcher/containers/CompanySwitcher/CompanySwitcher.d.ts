@@ -7,8 +7,6 @@ export interface CompanySwitcherProps extends HTMLAttributes<HTMLDivElement> {
     ariaLabel?: string;
     /** Callback function to be called when the company changes */
     onCompanyChange?: (company: Company) => void;
-    /** Maximum number of companies to fetch for the picker */
-    size?: number;
 }
 /**
  * CompanySwitcher component allows users to switch between companies they have access to.

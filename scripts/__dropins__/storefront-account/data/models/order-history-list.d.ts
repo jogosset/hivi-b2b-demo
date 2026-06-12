@@ -51,7 +51,6 @@ export type ShipmentsModel = {
     tracking: ShipmentsTracingModel[];
 };
 export type OrderDetails = {
-    adminAssistedOrder?: number | null;
     status: string;
     token: string;
     carrier: string;

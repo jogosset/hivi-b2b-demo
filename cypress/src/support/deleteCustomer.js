@@ -37,8 +37,6 @@ afterEach(() => {
     'Purchase Orders end-to-end workflow',
     'B2B Purchase Orders',
     'Cleanup - Delete approval rules, users and roles',
-    'Verify B2B Requisition List Sharing feature',
-    'Seller Assisted Buying'
   ];
 
   const shouldSkip = skipDeleteTests.some(

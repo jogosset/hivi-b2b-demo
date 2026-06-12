@@ -28,8 +28,7 @@ export interface SignUpProps {
         Form?: SlotProps<DefaultSlotContext>;
         Buttons?: SlotProps<DefaultSlotContext>;
         SuccessNotification?: SlotProps<DefaultSlotContext>;
-        PrivacyPolicyConsent?: SlotProps;
-        RemoteShoppingAssistanceConsent?: SlotProps;
+        PrivacyPolicyConsent: SlotProps;
     };
     routeSignIn?: () => string;
     routeRedirectOnSignIn?: () => string;
@@ -43,8 +42,7 @@ export interface SignUpProps {
 export interface SignUpFormProps extends SignUpProps {
     setActiveComponent?: (componentName: activeComponentType) => void;
     slot?: {
-        PrivacyPolicyConsent?: SlotProps;
-        RemoteShoppingAssistanceConsent?: SlotProps;
+        PrivacyPolicyConsent: SlotProps;
     };
 }
 export interface UseSingUpFormProps extends Omit<SignUpFormProps, 'formSize' | 'inputsDefaultValueSet' | 'slots'> {
