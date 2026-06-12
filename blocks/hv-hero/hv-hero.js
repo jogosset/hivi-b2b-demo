@@ -7,11 +7,14 @@ function buildSlide(row, index) {
   slide.className = `hv-hero-slide hv-hero-slide-${index + 1}`;
   if (index === 0) slide.classList.add('hv-active');
 
-  // Background image
+  // col 0: background image
+  // col 1: image opacity (0.0–1.0); defaults to 0.55 for readable text
   const imgEl = cells[0]?.querySelector('img');
   if (imgEl) {
     const pic = createOptimizedPicture(imgEl.src, imgEl.alt || '', index === 0, [{ width: '1440' }]);
     pic.className = 'hv-hero-bg';
+    const rawOpacity = parseFloat(cells[1]?.textContent.trim());
+    pic.style.opacity = Number.isFinite(rawOpacity) ? Math.min(1, Math.max(0, rawOpacity)) : 0.55;
     slide.append(pic);
   }
 
@@ -22,7 +25,8 @@ function buildSlide(row, index) {
   const content = document.createElement('div');
   content.className = 'hv-hero-content';
 
-  const tag = cells[1]?.textContent.trim();
+  // col 2: tag, col 3: headline, col 4: sub, col 5: primary CTA, col 6: secondary CTA
+  const tag = cells[2]?.textContent.trim();
   if (tag) {
     const tagEl = document.createElement('div');
     tagEl.className = 'hv-hero-tag';
@@ -32,10 +36,10 @@ function buildSlide(row, index) {
 
   const h1 = document.createElement('h1');
   h1.className = 'hv-hero-headline';
-  h1.innerHTML = cells[2]?.innerHTML || '';
+  h1.innerHTML = cells[3]?.innerHTML || '';
   content.append(h1);
 
-  const sub = cells[3]?.textContent.trim();
+  const sub = cells[4]?.textContent.trim();
   if (sub) {
     const p = document.createElement('p');
     p.className = 'hv-hero-sub';
@@ -45,7 +49,7 @@ function buildSlide(row, index) {
 
   const ctas = document.createElement('div');
   ctas.className = 'hv-hero-ctas';
-  [cells[4], cells[5]].forEach((cell, i) => {
+  [cells[5], cells[6]].forEach((cell, i) => {
     const a = cell?.querySelector('a');
     if (!a) return;
     a.className = i === 0 ? 'hv-btn hv-btn-neon' : 'hv-btn hv-btn-outline-white';
@@ -87,7 +91,7 @@ function buildControls(count) {
 
 export default function decorate(block) {
   const rows = [...block.querySelectorAll(':scope > div')];
-  const slideRows = rows.filter((r) => r.children.length >= 4);
+  const slideRows = rows.filter((r) => r.children.length >= 3);
 
   const track = document.createElement('div');
   track.className = 'hv-hero-track';
