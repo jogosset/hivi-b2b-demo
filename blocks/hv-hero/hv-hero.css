@@ -1,0 +1,243 @@
+/* ── Layout ── */
+.hv-hero {
+  position: relative;
+  overflow: hidden;
+  background: var(--hv-color-dark);
+}
+
+.hv-hero .hv-hero-track {
+  display: flex;
+  transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+  will-change: transform;
+}
+
+.hv-hero .hv-hero-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  position: relative;
+  min-height: 560px;
+  display: flex;
+  align-items: center;
+}
+
+/* ── Background image ── */
+.hv-hero .hv-hero-bg {
+  position: absolute;
+  inset: 0;
+}
+
+.hv-hero .hv-hero-bg img,
+.hv-hero .hv-hero-bg picture {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 8s linear;
+}
+
+.hv-hero .hv-hero-slide.hv-active .hv-hero-bg img {
+  transform: scale(1.06);
+}
+
+/* ── Overlay ── */
+.hv-hero .hv-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, rgb(27 33 37 / 90%) 0%, rgb(27 33 37 / 60%) 55%, transparent 100%);
+}
+
+/* ── Content ── */
+.hv-hero .hv-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 680px;
+  padding: var(--spacing-xxlarge) var(--spacing-xxbig);
+}
+
+.hv-hero .hv-hero-tag {
+  display: inline-flex;
+  align-items: center;
+  background: var(--hv-color-neon);
+  color: var(--hv-color-dark);
+  padding: 4px var(--spacing-small);
+  border-radius: var(--shape-border-radius-1);
+  font-family: var(--hv-font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: var(--spacing-small);
+}
+
+.hv-hero .hv-hero-headline {
+  font-family: var(--hv-font-display);
+  font-size: clamp(4.8rem, 6vw, 8.6rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.96;
+  color: var(--hv-color-white);
+  margin: 0 0 var(--spacing-small);
+}
+
+.hv-hero .hv-hero-headline em {
+  color: var(--hv-color-neon);
+  font-style: normal;
+  display: block;
+}
+
+.hv-hero .hv-hero-sub {
+  font-family: var(--hv-font-body);
+  font-size: 1.7rem;
+  color: rgb(255 255 255 / 82%);
+  max-width: 480px;
+  margin: 0 0 var(--spacing-big);
+  line-height: 1.65;
+}
+
+.hv-hero .hv-hero-ctas {
+  display: flex;
+  gap: var(--spacing-small);
+  flex-wrap: wrap;
+}
+
+/* ── Shared button base ── */
+.hv-hero .hv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--spacing-small) var(--spacing-medium);
+  font-family: var(--hv-font-display);
+  font-size: 1.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: var(--shape-border-radius-1);
+  text-decoration: none;
+  transition: transform var(--hv-transition-mid), box-shadow var(--hv-transition-mid), background var(--hv-transition-mid);
+}
+
+.hv-hero .hv-btn:hover {
+  transform: translateY(-2px);
+}
+
+.hv-hero .hv-btn-neon {
+  background: var(--hv-color-neon);
+  color: var(--hv-color-dark);
+}
+
+.hv-hero .hv-btn-neon:hover {
+  background: var(--hv-color-neon-dim);
+  box-shadow: var(--hv-shadow-neon);
+}
+
+.hv-hero .hv-btn-outline-white {
+  background: transparent;
+  color: var(--hv-color-white);
+  border: 2px solid var(--hv-color-white);
+}
+
+.hv-hero .hv-btn-outline-white:hover {
+  background: var(--hv-color-white);
+  color: var(--hv-color-dark);
+}
+
+/* ── Controls ── */
+.hv-hero .hv-hero-controls {
+  position: absolute;
+  bottom: var(--spacing-medium);
+  right: var(--spacing-xbig);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+.hv-hero .hv-hero-dots {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  align-items: center;
+}
+
+.hv-hero .hv-hero-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background: rgb(255 255 255 / 35%);
+  cursor: pointer;
+  transition: all 0.4s;
+  border: none;
+  padding: 0;
+}
+
+.hv-hero .hv-hero-dot.hv-active {
+  background: var(--hv-color-neon);
+  width: 24px;
+}
+
+.hv-hero .hv-hero-arrow {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 12%);
+  border: 1px solid rgb(255 255 255 / 20%);
+  color: var(--hv-color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--hv-transition-mid), transform var(--hv-transition-mid);
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.hv-hero .hv-hero-arrow:hover {
+  background: var(--hv-color-orange);
+  transform: scale(1.08);
+}
+
+/* ── Progress bar ── */
+.hv-hero .hv-hero-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--hv-color-neon);
+  z-index: 10;
+  transform-origin: left;
+  animation: hv-progress 6s linear infinite;
+}
+
+@keyframes hv-progress {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* ── Entry animations ── */
+.hv-hero .hv-anim-fade-up {
+  animation: hv-fade-up 0.65s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes hv-fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsive ── */
+@media (min-width: 600px) {
+  .hv-hero .hv-hero-content {
+    padding: var(--spacing-xxlarge) var(--spacing-xxlarge);
+  }
+}
+
+@media (max-width: 600px) {
+  .hv-hero .hv-hero-slide { min-height: 460px; }
+
+  .hv-hero .hv-hero-content {
+    padding: var(--spacing-xbig) var(--spacing-medium);
+  }
+
+  .hv-hero .hv-hero-controls {
+    right: var(--spacing-medium);
+    bottom: var(--spacing-small);
+  }
+}

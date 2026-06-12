@@ -1,0 +1,197 @@
+.hv-value-props {
+  padding: var(--spacing-xxlarge) var(--spacing-medium);
+  background: var(--hv-color-white);
+}
+
+.hv-value-props .hv-vp-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxlarge);
+}
+
+.hv-value-props .hv-vp-media {
+  position: relative;
+  opacity: 0;
+  transform: translateX(-36px);
+}
+
+.hv-value-props .hv-vp-media.hv-visible {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+
+.hv-value-props .hv-vp-img-frame {
+  border-radius: var(--shape-border-radius-2);
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+}
+
+.hv-value-props .hv-vp-img-frame img,
+.hv-value-props .hv-vp-img-frame picture {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hv-value-props .hv-vp-badge {
+  position: absolute;
+  bottom: -20px;
+  right: -20px;
+  background: var(--hv-color-orange);
+  color: var(--hv-color-white);
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--hv-font-display);
+  text-align: center;
+  box-shadow: var(--hv-shadow-card-hover);
+}
+
+.hv-value-props .hv-vp-badge-num {
+  font-size: 3.2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.hv-value-props .hv-vp-badge-text {
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.hv-value-props .hv-vp-content {
+  opacity: 0;
+  transform: translateX(36px);
+}
+
+.hv-value-props .hv-vp-content.hv-visible {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.65s ease 0.15s, transform 0.65s ease 0.15s;
+}
+
+.hv-value-props .hv-vp-eyebrow {
+  font-family: var(--hv-font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--hv-color-orange);
+  margin: 0 0 var(--spacing-xsmall);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.hv-value-props .hv-vp-eyebrow::before {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 2px;
+  background: var(--hv-color-orange);
+  flex-shrink: 0;
+}
+
+.hv-value-props .hv-vp-title {
+  font-family: var(--hv-font-display);
+  font-size: clamp(2.8rem, 3.5vw, 4.6rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1.05;
+  color: var(--hv-color-dark);
+  margin: 0 0 var(--spacing-medium);
+}
+
+.hv-value-props .hv-vp-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--spacing-big);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.hv-value-props .hv-vp-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-small);
+}
+
+.hv-value-props .hv-vp-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--shape-border-radius-2);
+  flex-shrink: 0;
+  background: rgb(199 80 0 / 8%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  transition: background var(--hv-transition-mid);
+}
+
+.hv-value-props .hv-vp-item:hover .hv-vp-icon {
+  background: var(--hv-color-orange);
+}
+
+.hv-value-props .hv-vp-item-title {
+  font-family: var(--hv-font-display);
+  font-size: 1.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--hv-color-dark);
+  margin-bottom: 3px;
+}
+
+.hv-value-props .hv-vp-item-desc {
+  font-family: var(--hv-font-body);
+  font-size: 1.3rem;
+  color: var(--hv-color-muted);
+  line-height: 1.6;
+}
+
+.hv-value-props .hv-vp-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-small) var(--spacing-medium);
+  background: var(--hv-color-orange);
+  color: var(--hv-color-white);
+  font-family: var(--hv-font-display);
+  font-size: 1.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: var(--shape-border-radius-1);
+  text-decoration: none;
+  transition: background var(--hv-transition-mid), transform var(--hv-transition-mid), box-shadow var(--hv-transition-mid);
+}
+
+.hv-value-props .hv-vp-cta:hover {
+  background: var(--hv-color-orange-light);
+  transform: translateY(-2px);
+  box-shadow: var(--hv-shadow-card-hover);
+}
+
+@media (min-width: 900px) {
+  .hv-value-props {
+    padding: var(--spacing-xxlarge) var(--spacing-xxbig);
+  }
+
+  .hv-value-props .hv-vp-grid {
+    flex-direction: row;
+    gap: var(--spacing-xxlarge);
+    align-items: center;
+  }
+
+  .hv-value-props .hv-vp-media,
+  .hv-value-props .hv-vp-content {
+    flex: 1;
+  }
+}

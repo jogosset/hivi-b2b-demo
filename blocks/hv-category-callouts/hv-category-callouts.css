@@ -1,0 +1,115 @@
+.hv-category-callouts {
+  padding: var(--spacing-xxbig) var(--spacing-medium);
+  background: var(--hv-color-white);
+}
+
+.hv-category-callouts .hv-callout-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-small);
+}
+
+.hv-category-callouts .hv-callout-col {
+  position: relative;
+  border-radius: var(--shape-border-radius-2);
+  overflow: hidden;
+  display: block;
+  text-decoration: none;
+  background: var(--hv-color-dark);
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.hv-category-callouts .hv-callout-col.hv-visible {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.hv-category-callouts .hv-callout-col-img,
+.hv-category-callouts .hv-callout-col-img picture {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+}
+
+.hv-category-callouts .hv-callout-col-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0.85;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity var(--hv-transition-mid);
+}
+
+.hv-category-callouts .hv-callout-col:hover .hv-callout-col-img img {
+  transform: scale(1.07);
+  opacity: 1;
+}
+
+.hv-category-callouts .hv-callout-col-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(27 33 37 / 88%) 0%, rgb(27 33 37 / 20%) 60%, transparent 100%);
+}
+
+.hv-category-callouts .hv-callout-col-body {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--spacing-medium);
+}
+
+.hv-category-callouts .hv-callout-col-tag {
+  display: block;
+  margin-bottom: var(--spacing-xsmall);
+  font-family: var(--hv-font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--hv-color-neon);
+}
+
+.hv-category-callouts .hv-callout-col-title {
+  font-family: var(--hv-font-display);
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--hv-color-white);
+  line-height: 1.1;
+  margin-bottom: var(--spacing-small);
+}
+
+.hv-category-callouts .hv-callout-col-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--hv-color-orange);
+  color: var(--hv-color-white);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  border-radius: var(--shape-border-radius-1);
+  font-family: var(--hv-font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transform: translateY(6px);
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.hv-category-callouts .hv-callout-col:hover .hv-callout-col-btn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (min-width: 900px) {
+  .hv-category-callouts {
+    padding: var(--spacing-xxbig) var(--spacing-xxbig);
+  }
+
+  .hv-category-callouts .hv-callout-cols {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

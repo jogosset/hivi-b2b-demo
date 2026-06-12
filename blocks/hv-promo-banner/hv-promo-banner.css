@@ -1,0 +1,111 @@
+.hv-promo-banner {
+  position: relative;
+  overflow: hidden;
+  min-height: 380px;
+  display: flex;
+}
+
+.hv-promo-banner .hv-promo-img,
+.hv-promo-banner .hv-promo-img picture {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hv-promo-banner .hv-promo-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: brightness(0.65);
+}
+
+.hv-promo-banner .hv-promo-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-xxlarge) var(--spacing-xxbig);
+  background: linear-gradient(90deg, rgb(0 0 0 / 55%) 0%, transparent 70%);
+}
+
+.hv-promo-banner .hv-promo-content {
+  max-width: 560px;
+  opacity: 0;
+  transform: translateX(-36px);
+}
+
+.hv-promo-banner .hv-promo-content.hv-visible {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+
+.hv-promo-banner .hv-promo-eyebrow {
+  font-family: var(--hv-font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--hv-color-neon);
+  margin: 0 0 var(--spacing-small);
+}
+
+.hv-promo-banner .hv-promo-headline {
+  font-family: var(--hv-font-display);
+  font-size: clamp(3.6rem, 4vw, 5.8rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--hv-color-white);
+  line-height: 1;
+  margin: 0 0 var(--spacing-small);
+}
+
+.hv-promo-banner .hv-promo-headline em {
+  color: var(--hv-color-neon);
+  font-style: normal;
+}
+
+.hv-promo-banner .hv-promo-sub {
+  font-family: var(--hv-font-body);
+  font-size: 1.6rem;
+  color: rgb(255 255 255 / 80%);
+  margin: 0 0 var(--spacing-big);
+  max-width: 440px;
+  line-height: 1.6;
+}
+
+.hv-promo-banner .hv-promo-ctas {
+  display: flex;
+  gap: var(--spacing-small);
+  flex-wrap: wrap;
+}
+
+.hv-promo-banner .hv-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-small) var(--spacing-medium);
+  font-family: var(--hv-font-display);
+  font-size: 1.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: var(--shape-border-radius-1);
+  text-decoration: none;
+  transition: transform var(--hv-transition-mid), box-shadow var(--hv-transition-mid), background var(--hv-transition-mid);
+}
+
+.hv-promo-banner .hv-btn:hover { transform: translateY(-2px); }
+
+.hv-promo-banner .hv-btn-neon { background: var(--hv-color-neon); color: var(--hv-color-dark); }
+.hv-promo-banner .hv-btn-neon:hover { background: var(--hv-color-neon-dim); box-shadow: var(--hv-shadow-neon); }
+
+.hv-promo-banner .hv-btn-outline-white { background: transparent; color: var(--hv-color-white); border: 2px solid var(--hv-color-white); }
+.hv-promo-banner .hv-btn-outline-white:hover { background: var(--hv-color-white); color: var(--hv-color-dark); }
+
+@media (max-width: 600px) {
+  .hv-promo-banner .hv-promo-overlay {
+    padding: var(--spacing-xbig) var(--spacing-medium);
+  }
+}

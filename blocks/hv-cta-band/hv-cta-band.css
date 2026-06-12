@@ -1,0 +1,101 @@
+.hv-cta-band {
+  background: var(--hv-color-orange);
+  padding: var(--spacing-xlarge) var(--spacing-medium);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hv-cta-band::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 80px,
+    rgb(255 255 255 / 4%) 80px,
+    rgb(255 255 255 / 4%) 81px
+  );
+  pointer-events: none;
+}
+
+.hv-cta-band .hv-cta-band-inner {
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.hv-cta-band .hv-cta-band-inner.hv-visible {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+
+.hv-cta-band .hv-cta-band-title {
+  font-family: var(--hv-font-display);
+  font-size: clamp(3.2rem, 5vw, 6.2rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--hv-color-white);
+  line-height: 1;
+  margin: 0 0 var(--spacing-small);
+}
+
+.hv-cta-band .hv-cta-band-title em {
+  color: var(--hv-color-neon);
+  font-style: normal;
+}
+
+.hv-cta-band .hv-cta-band-sub {
+  font-family: var(--hv-font-body);
+  font-size: 1.7rem;
+  color: rgb(255 255 255 / 85%);
+  margin: 0 0 var(--spacing-big);
+}
+
+.hv-cta-band .hv-cta-band-btns {
+  display: flex;
+  gap: var(--spacing-small);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hv-cta-band .hv-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-small) var(--spacing-medium);
+  font-family: var(--hv-font-display);
+  font-size: 1.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: var(--shape-border-radius-1);
+  text-decoration: none;
+  transition: transform var(--hv-transition-mid), box-shadow var(--hv-transition-mid), background var(--hv-transition-mid), color var(--hv-transition-mid);
+}
+
+.hv-cta-band .hv-cta-btn:hover {
+  transform: translateY(-2px);
+}
+
+.hv-cta-band .hv-cta-btn-white {
+  background: var(--hv-color-white);
+  color: var(--hv-color-orange);
+}
+
+.hv-cta-band .hv-cta-btn-white:hover {
+  background: var(--hv-color-light-gray);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 20%);
+}
+
+.hv-cta-band .hv-cta-btn-dark {
+  background: var(--hv-color-dark);
+  color: var(--hv-color-white);
+}
+
+.hv-cta-band .hv-cta-btn-dark:hover {
+  background: var(--hv-color-mid);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 30%);
+}

@@ -1,0 +1,137 @@
+.hv-newsletter {
+  background: var(--hv-color-dark);
+  padding: var(--spacing-large) var(--spacing-medium);
+}
+
+.hv-newsletter .hv-nl-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxbig);
+}
+
+.hv-newsletter .hv-nl-copy {
+  opacity: 0;
+  transform: translateX(-36px);
+}
+
+.hv-newsletter .hv-nl-copy.hv-visible {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+
+.hv-newsletter .hv-nl-title {
+  font-family: var(--hv-font-display);
+  font-size: clamp(2.8rem, 3vw, 3.4rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--hv-color-white);
+  line-height: 1.1;
+  margin: 0 0 var(--spacing-xsmall);
+}
+
+.hv-newsletter .hv-nl-title em {
+  color: var(--hv-color-neon);
+  font-style: normal;
+}
+
+.hv-newsletter .hv-nl-sub {
+  font-family: var(--hv-font-body);
+  font-size: 1.5rem;
+  color: rgb(255 255 255 / 55%);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.hv-newsletter .hv-nl-form-wrap {
+  opacity: 0;
+  transform: translateX(36px);
+}
+
+.hv-newsletter .hv-nl-form-wrap.hv-visible {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.65s ease 0.15s, transform 0.65s ease 0.15s;
+}
+
+.hv-newsletter .hv-nl-form {
+  display: flex;
+  border: 2px solid rgb(255 255 255 / 15%);
+  border-radius: var(--shape-border-radius-1);
+  overflow: hidden;
+  transition: border-color var(--hv-transition-mid);
+}
+
+.hv-newsletter .hv-nl-form:focus-within {
+  border-color: var(--hv-color-neon);
+}
+
+.hv-newsletter .hv-nl-input {
+  flex: 1;
+  background: rgb(255 255 255 / 7%);
+  border: none;
+  outline: none;
+  padding: var(--spacing-small) var(--spacing-medium);
+  font-size: 1.4rem;
+  font-family: var(--hv-font-body);
+  color: var(--hv-color-white);
+  min-width: 0;
+}
+
+.hv-newsletter .hv-nl-input::placeholder {
+  color: rgb(255 255 255 / 35%);
+}
+
+.hv-newsletter .hv-nl-submit {
+  background: var(--hv-color-neon);
+  color: var(--hv-color-dark);
+  border: none;
+  padding: var(--spacing-small) var(--spacing-medium);
+  font-family: var(--hv-font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background var(--hv-transition-mid);
+  white-space: nowrap;
+}
+
+.hv-newsletter .hv-nl-submit:hover {
+  background: var(--hv-color-neon-dim);
+}
+
+.hv-newsletter .hv-nl-note {
+  font-family: var(--hv-font-body);
+  font-size: 1.1rem;
+  color: rgb(255 255 255 / 30%);
+  margin: var(--spacing-xsmall) 0 0;
+}
+
+.hv-newsletter .hv-nl-thanks {
+  font-family: var(--hv-font-display);
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--hv-color-neon);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0;
+  padding: var(--spacing-small) 0;
+}
+
+@media (min-width: 900px) {
+  .hv-newsletter {
+    padding: var(--spacing-large) var(--spacing-xxbig);
+  }
+
+  .hv-newsletter .hv-nl-grid {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--spacing-xxlarge);
+  }
+
+  .hv-newsletter .hv-nl-copy,
+  .hv-newsletter .hv-nl-form-wrap {
+    flex: 1;
+  }
+}

@@ -1,0 +1,94 @@
+.hv-category-grid {
+  padding: var(--spacing-xxbig) var(--spacing-medium);
+  background: var(--hv-color-white);
+}
+
+.hv-category-grid .hv-cat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-small);
+}
+
+.hv-category-grid .hv-cat-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-medium) var(--spacing-small);
+  border-radius: var(--shape-border-radius-2);
+  border: 1px solid var(--hv-color-border);
+  background: var(--hv-color-surface);
+  text-align: center;
+  text-decoration: none;
+  transition: border-color var(--hv-transition-mid), background var(--hv-transition-mid), transform var(--hv-transition-mid), box-shadow var(--hv-transition-mid);
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.hv-category-grid .hv-cat-tile.hv-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: border-color var(--hv-transition-mid), background var(--hv-transition-mid), opacity 0.5s ease, transform 0.5s ease, box-shadow var(--hv-transition-mid);
+}
+
+.hv-category-grid .hv-cat-tile:hover {
+  border-color: var(--hv-color-orange);
+  background: var(--hv-color-white);
+  transform: translateY(-4px);
+  box-shadow: var(--hv-shadow-card-hover);
+}
+
+.hv-category-grid .hv-cat-img {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--shape-border-radius-2);
+  overflow: hidden;
+  background: var(--hv-color-light-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hv-category-grid .hv-cat-img img,
+.hv-category-grid .hv-cat-img picture {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.hv-category-grid .hv-cat-tile:hover .hv-cat-img img {
+  transform: scale(1.08);
+}
+
+.hv-category-grid .hv-cat-name {
+  font-family: var(--hv-font-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--hv-color-dark);
+  line-height: 1.2;
+}
+
+.hv-category-grid .hv-cat-count {
+  font-family: var(--hv-font-body);
+  font-size: 1.1rem;
+  color: var(--hv-color-muted);
+}
+
+@media (min-width: 600px) {
+  .hv-category-grid .hv-cat-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .hv-category-grid {
+    padding: var(--spacing-xxbig) var(--spacing-xxbig);
+  }
+
+  .hv-category-grid .hv-cat-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}

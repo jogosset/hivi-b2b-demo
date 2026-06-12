@@ -1,0 +1,56 @@
+.hv-announcement-bar {
+  background: var(--hv-color-dark);
+  color: var(--hv-color-white);
+  padding: 7px var(--spacing-medium);
+  font-family: var(--hv-font-body);
+  font-size: 1.3rem;
+}
+
+.hv-announcement-bar > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-medium);
+  flex-wrap: wrap;
+}
+
+.hv-announcement-bar .hv-ann-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+.hv-announcement-bar .hv-ann-left a {
+  color: var(--hv-color-neon);
+  text-decoration: underline;
+}
+
+.hv-announcement-bar .hv-ann-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  flex-shrink: 0;
+}
+
+.hv-announcement-bar .hv-ann-right a {
+  color: rgb(255 255 255 / 70%);
+  transition: color var(--hv-transition-mid);
+  font-size: 1.2rem;
+}
+
+.hv-announcement-bar .hv-ann-right a:hover {
+  color: var(--hv-color-neon);
+}
+
+.hv-announcement-bar .hv-ann-sep {
+  display: block;
+  width: 1px;
+  height: 16px;
+  background: rgb(255 255 255 / 20%);
+}
+
+.hv-announcement-bar .hv-ann-phone {
+  color: var(--hv-color-neon);
+  font-weight: 700;
+  font-size: 1.3rem;
+}

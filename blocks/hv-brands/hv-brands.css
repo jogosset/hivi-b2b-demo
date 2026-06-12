@@ -1,0 +1,52 @@
+.hv-brands {
+  padding: var(--spacing-xxbig) var(--spacing-medium);
+  background: var(--hv-color-surface);
+  border-top: 1px solid var(--hv-color-border);
+}
+
+.hv-brands .hv-brands-heading {
+  font-family: var(--hv-font-display);
+  font-size: clamp(2rem, 2.5vw, 2.6rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--hv-color-dark);
+  text-align: center;
+  margin: 0 0 var(--spacing-big);
+}
+
+.hv-brands .hv-brands-scroll {
+  display: flex;
+  gap: var(--spacing-small);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hv-brands .hv-brand-chip {
+  background: var(--hv-color-white);
+  border: 1px solid var(--hv-color-border);
+  border-radius: var(--shape-border-radius-2);
+  padding: var(--spacing-small) var(--spacing-medium);
+  font-family: var(--hv-font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--hv-color-mid);
+  text-decoration: none;
+  transition: border-color var(--hv-transition-mid), color var(--hv-transition-mid), box-shadow var(--hv-transition-mid);
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.hv-brands .hv-brand-chip.hv-visible {
+  opacity: 1;
+  transform: none;
+  transition: border-color var(--hv-transition-mid), color var(--hv-transition-mid), box-shadow var(--hv-transition-mid), opacity 0.4s ease, transform 0.4s ease;
+}
+
+.hv-brands .hv-brand-chip:hover {
+  border-color: var(--hv-color-orange);
+  color: var(--hv-color-orange);
+  box-shadow: var(--hv-shadow-card);
+}

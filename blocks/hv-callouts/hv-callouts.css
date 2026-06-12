@@ -1,0 +1,114 @@
+.hv-callouts {
+  padding: 0 var(--spacing-medium) var(--spacing-xxbig);
+  background: var(--hv-color-white);
+}
+
+.hv-callouts .hv-callouts-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-small);
+}
+
+.hv-callouts .hv-callout-card {
+  position: relative;
+  border-radius: var(--shape-border-radius-2);
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  display: block;
+  text-decoration: none;
+}
+
+.hv-callouts .hv-callout-card.hv-reveal-left {
+  opacity: 0;
+  transform: translateX(-36px);
+}
+
+.hv-callouts .hv-callout-card.hv-reveal-right {
+  opacity: 0;
+  transform: translateX(36px);
+}
+
+.hv-callouts .hv-callout-card.hv-visible {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+
+.hv-callouts .hv-callout-img,
+.hv-callouts .hv-callout-img img,
+.hv-callouts .hv-callout-img picture {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hv-callouts .hv-callout-card:hover .hv-callout-img img {
+  transform: scale(1.06);
+}
+
+.hv-callouts .hv-callout-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(0 0 0 / 65%) 0%, transparent 55%);
+}
+
+.hv-callouts .hv-callout-body {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--spacing-medium) var(--spacing-big);
+}
+
+.hv-callouts .hv-callout-tag {
+  display: inline-block;
+  background: var(--hv-color-neon);
+  color: var(--hv-color-dark);
+  padding: 2px var(--spacing-xsmall);
+  border-radius: var(--shape-border-radius-1);
+  font-family: var(--hv-font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.hv-callouts .hv-callout-title {
+  font-family: var(--hv-font-display);
+  font-size: 2.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--hv-color-white);
+  line-height: 1.1;
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.hv-callouts .hv-callout-cta {
+  font-family: var(--hv-font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--hv-color-neon);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity var(--hv-transition-mid), transform var(--hv-transition-mid);
+}
+
+.hv-callouts .hv-callout-card:hover .hv-callout-cta {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (min-width: 900px) {
+  .hv-callouts {
+    padding: 0 var(--spacing-xxbig) var(--spacing-xxbig);
+  }
+
+  .hv-callouts .hv-callouts-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
