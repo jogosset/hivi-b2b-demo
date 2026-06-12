@@ -1,70 +1,112 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import { observeReveal } from '../../scripts/hv-animations.js';
 
-function buildStars(rating) {
-  const num = parseFloat(rating) || 0;
+function buildStars(ratingStr) {
+  const num = parseFloat(ratingStr) || 0;
   const full = Math.floor(num);
-  const half = num % 1 >= 0.5 ? 1 : 0;
+  const half = num - full >= 0.5 ? 1 : 0;
   const empty = 5 - full - half;
-  return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(empty);
+  let html = '';
+  for (let i = 0; i < full; i += 1) html += '<span class="hv-star hv-star-full">★</span>';
+  if (half) html += '<span class="hv-star hv-star-half">★</span>';
+  for (let i = 0; i < empty; i += 1) html += '<span class="hv-star hv-star-empty">☆</span>';
+  return html;
+}
+
+function badgeClass(text) {
+  const t = (text || '').toLowerCase();
+  if (t === 'new') return 'hv-plabel hv-plabel--new';
+  if (t.includes('pro')) return 'hv-plabel hv-plabel--pro';
+  return 'hv-plabel';
 }
 
 export default function decorate(block) {
   const rows = [...block.querySelectorAll(':scope > div')];
 
-  // First row with a single cell is treated as a section header
-  let headerRow = null;
+  // First row with ≥ 2 cells is the section header: [eyebrow | heading | view-all-link]
+  let headerCells = null;
   let productRows = rows;
-  if (rows[0]?.children.length === 1) {
-    [headerRow] = rows;
+  if (rows[0]?.children.length >= 2) {
+    headerCells = [...rows[0].children];
     productRows = rows.slice(1);
   }
 
   const header = document.createElement('div');
   header.className = 'hv-products-header';
 
-  if (headerRow) {
-    const titleEl = document.createElement('h2');
-    titleEl.className = 'hv-products-title hv-reveal';
-    titleEl.textContent = headerRow.children[0]?.textContent.trim() || 'Featured Products';
-    header.append(titleEl);
+  const titleGroup = document.createElement('div');
+  titleGroup.className = 'hv-products-title-group';
+
+  const eyebrowText = headerCells?.[0]?.textContent.trim();
+  if (eyebrowText) {
+    const eyebrow = document.createElement('p');
+    eyebrow.className = 'hv-products-eyebrow';
+    eyebrow.textContent = eyebrowText;
+    titleGroup.append(eyebrow);
   }
 
+  const h2 = document.createElement('h2');
+  h2.className = 'hv-products-title hv-reveal';
+  h2.textContent = headerCells?.[1]?.textContent.trim() || 'Featured Products';
+  titleGroup.append(h2);
+
+  const viewAllCell = headerCells?.[2];
+  const viewAllHref = viewAllCell?.querySelector('a')?.href || viewAllCell?.textContent.trim() || '/products';
+  const viewAllLabel = viewAllCell?.querySelector('a')?.textContent.trim() || 'View All →';
   const viewAll = document.createElement('a');
   viewAll.className = 'hv-products-view-all';
-  viewAll.href = '/products';
-  viewAll.textContent = 'View All →';
-  header.append(viewAll);
+  viewAll.href = viewAllHref;
+  viewAll.textContent = viewAllLabel;
+
+  header.append(titleGroup, viewAll);
 
   const grid = document.createElement('div');
   grid.className = 'hv-product-grid hv-stagger';
 
+  // Column map: 0:img 1:brand 2:name 3:ansi 4:price 5:msrp 6:save% 7:bulk 8:badge 9:rating 10:link
   productRows.forEach((row) => {
     const cells = [...row.children];
-    const href = cells[7]?.querySelector('a')?.href || cells[7]?.textContent.trim() || '#';
+    const href = cells[10]?.querySelector('a')?.href || cells[10]?.textContent.trim() || '#';
 
     const card = document.createElement('a');
     card.className = 'hv-product-card hv-reveal';
     card.href = href;
 
-    // Image
+    // ── Image area ──────────────────────────────────────────────
     const imgWrap = document.createElement('div');
     imgWrap.className = 'hv-product-img-wrap';
 
-    const badge = cells[6]?.textContent.trim();
-    if (badge) {
-      const labelEl = document.createElement('div');
-      labelEl.className = 'hv-product-label';
+    const badgeText = cells[8]?.textContent.trim();
+    if (badgeText) {
       const pill = document.createElement('span');
-      pill.className = 'hv-plabel';
-      pill.textContent = badge;
-      labelEl.append(pill);
-      imgWrap.append(labelEl);
+      pill.className = badgeClass(badgeText);
+      pill.textContent = badgeText;
+      imgWrap.append(pill);
     }
+
+    const wish = document.createElement('button');
+    wish.className = 'hv-product-wish';
+    wish.setAttribute('aria-label', 'Save to wishlist');
+    wish.setAttribute('type', 'button');
+    wish.textContent = '♡';
+    wish.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const wished = wish.classList.toggle('hv-wished');
+      wish.textContent = wished ? '♥' : '♡';
+    });
+    imgWrap.append(wish);
 
     const imgEl = cells[0]?.querySelector('img');
     if (imgEl) {
-      imgWrap.append(createOptimizedPicture(imgEl.src, imgEl.alt || cells[2]?.textContent.trim() || '', false, [{ width: '240' }]));
+      imgWrap.append(
+        createOptimizedPicture(
+          imgEl.src,
+          imgEl.alt || cells[2]?.textContent.trim() || '',
+          false,
+          [{ width: '300' }],
+        ),
+      );
     }
 
     const addOverlay = document.createElement('div');
@@ -74,7 +116,7 @@ export default function decorate(block) {
 
     card.append(imgWrap);
 
-    // Info
+    // ── Info area ────────────────────────────────────────────────
     const info = document.createElement('div');
     info.className = 'hv-product-info';
 
@@ -115,10 +157,25 @@ export default function decorate(block) {
       pricing.append(msrpEl);
     }
 
+    const save = cells[6]?.textContent.trim();
+    if (save) {
+      const saveEl = document.createElement('span');
+      saveEl.className = 'hv-product-save';
+      saveEl.textContent = save;
+      pricing.append(saveEl);
+    }
+
     info.append(pricing);
 
-    // Stars — parse "4.8 (847)" format
-    const ratingText = cells[8]?.textContent.trim() || '';
+    const bulk = cells[7]?.textContent.trim();
+    if (bulk) {
+      const bulkEl = document.createElement('div');
+      bulkEl.className = 'hv-product-bulk';
+      bulkEl.textContent = bulk;
+      info.append(bulkEl);
+    }
+
+    const ratingText = cells[9]?.textContent.trim() || '';
     const ratingMatch = ratingText.match(/^([\d.]+)\s*\(?([\d,]+)\)?/);
     if (ratingMatch) {
       const stars = document.createElement('div');
@@ -133,4 +190,14 @@ export default function decorate(block) {
 
   block.replaceChildren(header, grid);
   observeReveal(block);
+
+  // Reveal cards already in the viewport on load
+  requestAnimationFrame(() => {
+    block.querySelectorAll('.hv-reveal').forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      if (rect.height > 0 && rect.top < window.innerHeight) {
+        el.classList.add('hv-visible');
+      }
+    });
+  });
 }
