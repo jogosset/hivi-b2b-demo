@@ -5,6 +5,7 @@
       "commerce-endpoint": "https://na1-sandbox.api.commerce.adobe.com/83A5fPM5CuXnMERL7GN5ZL/graphql",
       "commerce-assets-enabled": true,
       "commerce-b2b-enabled": true,
+      "commerce-companies-enabled": true,
       "headers": {
         "all": {
           "Store": "default"
