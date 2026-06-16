@@ -402,6 +402,12 @@ function buildTemplateColumns(doc) {
  * @param {Element} doc The document element
  */
 export function applyTemplates(doc) {
+  // Auto-promote to columns layout if sections carry data-column-width but the
+  // page-level Metadata block is missing the "template: columns" entry.
+  if (!doc.body.classList.contains('columns')
+    && doc.querySelectorAll('main > div.section[data-column-width]').length > 0) {
+    doc.body.classList.add('columns');
+  }
   if (doc.body.classList.contains('columns')) {
     buildTemplateColumns(doc);
   }
