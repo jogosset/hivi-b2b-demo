@@ -44,18 +44,19 @@
       "product-list-page",
       "product-recommendations",
       "targeted-block",
-      "text",
-      "hero-v2",
-      "product-teaser",
-      "quote",
-      "tabs",
-      "video"
+      "text"
     ]
   },
   {
     "id": "accordion",
     "components": [
       "accordion-item"
+    ]
+  },
+  {
+    "id": "cards-jg",
+    "components": [
+      "card-jg"
     ]
   },
   {
@@ -91,12 +92,6 @@
     "id": "tabs",
     "components": [
       "tabs-item"
-    ]
-  },
-  {
-    "id": "cards-jg",
-    "components": [
-      "card-jg"
     ]
   }
 ]
