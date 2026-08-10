@@ -4,8 +4,6 @@
       "commerce-core-endpoint": "https://na1-sandbox.api.commerce.adobe.com/83A5fPM5CuXnMERL7GN5ZL/graphql",
       "commerce-endpoint": "https://na1-sandbox.api.commerce.adobe.com/83A5fPM5CuXnMERL7GN5ZL/graphql",
       "commerce-assets-enabled": true,
-      "commerce-b2b-enabled": true,
-      "commerce-companies-enabled": true,
       "headers": {
         "all": {
           "Store": "default"
@@ -27,7 +25,9 @@
         "store-view-name": "Default Store View",
         "website-id": 1,
         "website-name": "Main Website"
-      }
+      },
+      "commerce-b2b-enabled": true,
+      "commerce-companies-enabled": true
     }
   },
   "robots": {
@@ -55,6 +55,15 @@
         "url": "https://main--hivi-b2b-demo--jogosset.aem.live/tools/segments/dist/index.html",
         "isPalette": true,
         "paletteRect": "top: 54px; left: 5px; bottom: 5px; width: 300px; height: calc(100% - 59px); border-radius: var(--hlx-sk-button-border-radius); overflow: hidden; resize: horizontal;"
+      },
+      {
+        "id": "quick-edit",
+        "title": "Quick Edit",
+        "environments": [
+          "dev",
+          "preview"
+        ],
+        "event": "quick-edit"
       }
     ]
   }
