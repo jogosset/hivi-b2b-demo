@@ -16,33 +16,46 @@
       "id": "targeted-block",
       "fields": [
         {
-          "component": "richtext",
-          "name": "content",
-          "label": "Content"
+          "component": "text",
+          "name": "headline",
+          "label": "Headline",
+          "valueType": "string",
+          "description": "Optional headline text displayed over the background image"
         },
         {
-          "component": "text",
-          "name": "customerGroups",
-          "label": "Customer Groups",
-          "valueType": "string"
+          "component": "reference",
+          "name": "backgroundImage",
+          "label": "Background Image",
+          "valueType": "string",
+          "description": "Optional background image displayed behind the headline and content"
         },
         {
           "component": "text",
           "name": "customerSegments",
-          "label": "Customer Segments",
-          "valueType": "string"
+          "label": "Customer Segment ID(s)",
+          "valueType": "string",
+          "description": "Comma-separated Adobe Commerce segment IDs (e.g. 1, 2, 3)"
+        },
+        {
+          "component": "text",
+          "name": "customerGroups",
+          "label": "Customer Group ID(s)",
+          "valueType": "string",
+          "description": "Comma-separated Adobe Commerce customer group IDs (e.g. 1, 2)"
         },
         {
           "component": "text",
           "name": "type",
           "label": "Type",
-          "valueType": "string"
+          "valueType": "string",
+          "description": "Personalization type: segment or group"
         },
         {
           "component": "text",
           "name": "fragment",
-          "label": "Fragment",
-          "valueType": "string"
+          "label": "Fragment Path",
+          "valueType": "string",
+          "description": "Path to the content fragment shown to matched users (e.g. /fragments/member-offer)"
         }
       ]
     }
