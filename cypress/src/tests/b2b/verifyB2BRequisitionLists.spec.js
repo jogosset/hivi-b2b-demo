@@ -68,7 +68,7 @@ function assertRequisitionListExists(selector, listName, index = null) {
   cy.wait(2000);
 }
 
-describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
+describe("Verify B2B Requisition Lists feature", { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   it("Verify B2B Requisition is not available for guest users", () => {
     // Navigate to PDP
     cy.visit(products.simple.urlPath);
@@ -172,17 +172,16 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
 
       // Navigate to search page to find configurable products
       cy.visit("/search?q=configurable");
-      cy.wait(2000);
 
       // Click requisition list on first configurable product in search results
-      cy.get(fields.requisitionListSelector).first().click();
+      cy.get(fields.requisitionListSelector).first().should("be.visible").click();
 
       // Should redirect to PDP
       cy.url().should("include", "/products/");
-      cy.wait(2000);
 
       // Should show validation message on PDP from the redirection
-      cy.get(fields.productDetailsAlert)
+      // (longer timeout to allow the PDP/dropin to finish mounting after redirect)
+      cy.get(fields.productDetailsAlert, { timeout: 10000 })
         .should("be.visible")
         .contains(
           "Please select product options before adding it to a requisition list"
@@ -197,20 +196,35 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
         );
 
       // Select all available options
-      cy.get(".product-details__options select").each(($select) => {
-        cy.wrap($select).select(1);
-        cy.wait(500);
+      cy.get('body').then(($body) => {
+        if ($body.find('.product-details__options select').length > 0) {
+          cy.get('.product-details__options select').each(($select) => {
+            cy.wrap($select).select(1);
 
-        cy.get(fields.productDetailsAlert).should("not.be.visible");
+            cy.get(fields.productDetailsAlert).should("not.be.visible");
 
-        // Add configurable product to requisition list
-        cy.get('.product-details__buttons').find(fields.requisitionListSelector).click();
-        cy.get(fields.requisitionListPickerAvailableListFirstChild).click();
-        cy.get(fields.requisitionListPickerActionsButton).click();
+            // Add configurable product to requisition list
+            cy.get('.product-details__buttons').find(fields.requisitionListSelector).click();
+            cy.get(fields.requisitionListPickerAvailableListFirstChild).click();
+            cy.get(fields.requisitionListPickerActionsButton).click();
 
-        cy.get(fields.requisitionListAlert)
-          .should("be.visible")
-          .contains("Item(s) successfully added");
+            cy.get(fields.requisitionListAlert)
+              .should("be.visible")
+              .contains("Item(s) successfully added");
+          });
+        } else {
+          cy.selectProductOption('color', 'red');
+
+          cy.get(fields.productDetailsAlert).should("not.be.visible");
+
+          cy.get('.product-details__buttons').find(fields.requisitionListSelector).click();
+          cy.get(fields.requisitionListPickerAvailableListFirstChild).click();
+          cy.get(fields.requisitionListPickerActionsButton).click();
+
+          cy.get(fields.requisitionListAlert)
+            .should("be.visible")
+            .contains("Item(s) successfully added");
+        }
       });
     });
 
@@ -249,9 +263,16 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
         );
 
       // Select required options
-      cy.get(".product-details__options select").each(($select) => {
-        cy.wrap($select).select(1);
-        cy.wait(500);
+      cy.get('body').then(($body) => {
+        if ($body.find('.product-details__options select').length > 0) {
+          cy.get('.product-details__options select').each(($select) => {
+            cy.wrap($select).select(1);
+            cy.wait(500);
+          });
+        } else {
+          cy.selectProductOption('color', 'red');
+          cy.wait(500);
+        }
       });
 
       cy.get(fields.productDetailsAlert).should("not.be.visible");

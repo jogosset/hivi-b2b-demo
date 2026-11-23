@@ -1,12 +1,28 @@
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
 import { RequisitionList } from '../models/requisitionList';
-import { ConfiguredProduct, Link, Sample, BundleOption, ConfigurableOption, RawCustomizableOption, GiftCardOption } from '../models/item';
-
+import { Item, ConfiguredProduct, Link, Sample, BundleOption, ConfigurableOption, RawCustomizableOption, GiftCardOption } from '../models/item';
 export interface RawRequisitionListData {
     name: string;
     description: string;
     uid: string;
     updated_at: string;
     items_count: number;
+    is_public?: boolean;
     items: {
         items: RawItemData[];
         page_info: {
@@ -21,6 +37,9 @@ interface RawItemData {
     uid: string;
     product: {
         sku: string;
+        name?: string;
+        small_image?: Item['image'];
+        url_key?: string;
         stock_status?: string;
         only_x_left_in_stock?: number | null;
     };
@@ -34,4 +53,3 @@ interface RawItemData {
     gift_card_options?: GiftCardOption;
 }
 export {};
-//# sourceMappingURL=transform-requisition-list.d.ts.map

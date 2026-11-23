@@ -46,6 +46,7 @@ export interface CustomerCompanyInfo {
  */
 export interface UseCompanyDataProps {
     onCompanyChange?: (company: Company) => void;
+    pageSize?: number;
 }
 /**
  * Return type for the useCompanyData hook
@@ -54,6 +55,17 @@ export interface UseCompanyDataReturn {
     companies: CompanyOption[];
     currentCompany: CompanyOption;
     handleCompanyChange: (event: Event) => Promise<void>;
+}
+/**
+ * Company-scoped catalog view context served by the backend via
+ * `Company.catalogViewContext`.
+ *
+ * `accessToken` is null until a restricted access key is provisioned/set up
+ * on the target environment.
+ */
+export interface CatalogViewContext {
+    catalogViewId: string;
+    accessToken: string | null;
 }
 /**
  * GraphQL response wrapper
@@ -69,4 +81,3 @@ export interface GraphQLResponse {
         uid: string;
     };
 }
-//# sourceMappingURL=company.d.ts.map

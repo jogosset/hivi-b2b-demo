@@ -17,6 +17,7 @@
 export * from './initialize';
 export * from './fetch-graphql';
 export * from './getStoreConfig';
+export * from './enrichConfigurableProducts';
 export * from './getRequisitionLists';
 export * from './getRequisitionList';
 export * from './createRequisitionList';
@@ -28,4 +29,12 @@ export * from './addProductsToRequisitionList';
 export * from './addRequisitionListItemsToCart';
 export * from './moveItemsBetweenRequisitionLists';
 export * from './copyItemsBetweenRequisitionLists';
-//# sourceMappingURL=index.d.ts.map
+export * from './getCompanyUsers';
+export * from './shareRequisitionListByEmail';
+export * from './shareRequisitionListByToken';
+export * from './getSharedRequisitionList';
+export * from './importSharedRequisitionList';
+export * from './getPublicRequisitionList';
+export * from './addPublicRequisitionListItemsToCart';
+export * from './sharePublicRequisitionList';
+export * from './getPublicRequisitionListToken';

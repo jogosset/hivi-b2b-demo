@@ -27,11 +27,16 @@ export interface NegotiableQuoteAddressInput {
 export interface NegotiableQuoteTemplateShippingAddressInput {
     address?: NegotiableQuoteAddressInput;
     customerAddressUid?: string;
+    /**
+     * The ID of an address from the company address book. Required instead of
+     * customerAddressUid once the company address book is enabled, because the
+     * backend then rejects both a customer address and a new address payload.
+     */
+    companyAddressId?: number | string;
     customerNotes?: string;
 }
 export interface AddQuoteTemplateShippingAddressParams {
     templateId: string;
     shippingAddress: NegotiableQuoteTemplateShippingAddressInput;
 }
-export declare const addQuoteTemplateShippingAddress: (params: AddQuoteTemplateShippingAddressParams) => Promise<import('../../data/models/negotiable-quote-template-model').NegotiableQuoteTemplateModel>;
-//# sourceMappingURL=addQuoteTemplateShippingAddress.d.ts.map
+export declare const addQuoteTemplateShippingAddress: (params: AddQuoteTemplateShippingAddressParams) => Promise<any>;

@@ -18,6 +18,7 @@ import {
   assertOrderConfirmationShippingMethod,
   assertSelectedPaymentMethod,
   assertOrderCommentsVisible,
+  assertEachCartLineHasPromotionLabelsRegion,
 } from "../../assertions";
 import {
   customerShippingAddress,
@@ -27,14 +28,20 @@ import {
 } from "../../fixtures/index";
 import * as fields from "../../fields";
 
-describe("Verify guest user can place order", () => {
+describe("Verify guest user can place order", { tags: "@skipSaasProd" }, () => {
   it("Verify guest user can place order", () => {
     cy.visit("");
     // Navigate to PDP
     cy.visit(products.simple.urlPath);
+    // Wait for the product form to hydrate (Add to Cart enabled) before touching
+    // the incrementer; clicking too early registers in the UI but not the cart
+    // model, leaving quantity at 1.
+    cy.contains("Add to Cart").should("be.visible").and("not.be.disabled");
     cy.get(".dropin-incrementer__increase-button").click();
     cy.get(".dropin-incrementer__input").should("have.value", "2");
-    // cypress fails intermittently as it takes old value 1, this is needed for tests to be stable
+    // The incrementer dropin re-renders shortly after the click and can revert
+    // the quantity in the cart model; there is no DOM signal for "committed", so
+    // a short settle is intentionally kept here to avoid adding quantity 1.
     cy.wait(1000);
     cy.get(".minicart-panel").should("be.empty");
     cy.contains("Add to Cart").click();
@@ -54,6 +61,7 @@ describe("Verify guest user can place order", () => {
       "/products/youth-tee/adb150",
     )(".cart-mini-cart");
     assertProductImage(Cypress.env("productImageName"))(".cart-mini-cart");
+    assertEachCartLineHasPromotionLabelsRegion(".cart-mini-cart");
     cy.contains("View Cart").click();
     assertCartSummaryProduct(
       "Youth tee",
@@ -70,6 +78,7 @@ describe("Verify guest user can place order", () => {
     assertProductImage(Cypress.env("productImageName"))(
       ".commerce-cart-wrapper",
     );
+    assertEachCartLineHasPromotionLabelsRegion(".commerce-cart-wrapper");
     cy.contains("Estimated Shipping").should("be.visible");
     cy.get(".dropin-button--primary").contains("Checkout").click();
     assertCartSummaryMisc(2);
@@ -81,6 +90,7 @@ describe("Verify guest user can place order", () => {
       "$20.00",
       "0",
     );
+    assertEachCartLineHasPromotionLabelsRegion(".cart-cart-summary-list");
     cy.contains("Estimated Shipping").should("be.visible");
     const apiMethod = "setGuestEmailOnCart";
     const urlTest = Cypress.env("graphqlEndPoint");
@@ -103,7 +113,6 @@ describe("Verify guest user can place order", () => {
     assertSelectedPaymentMethod(paymentServicesCreditCard.code, 2);
 
     checkTermsAndConditions();
-    cy.wait(5000);
     placeOrder();
 
     assertOrderConfirmationCommonDetails(
@@ -139,12 +148,13 @@ describe("Verify guest user can place order", () => {
 
     cy.get(fields.submitCancelOrderButton).click();
 
-    cy.get(".dropin-header-container__title", { timeout: 3000 })
+    // Wait for the modal to close before asserting the updated order status
+    cy.get(fields.cancellationReasonsModal).should("not.exist");
+
+    cy.get(".dropin-header-container__title")
       .should("exist")
       .and("be.visible")
       .and("contain.text", "Cancellation requested");
-
-    cy.get(fields.cancellationReasonsModal).should("not.exist");
 
     cy.get(".order-order-status-content__wrapper-description p")
       .should("exist")

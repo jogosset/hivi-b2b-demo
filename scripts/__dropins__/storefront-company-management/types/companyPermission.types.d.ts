@@ -16,6 +16,7 @@
  *******************************************************************/
 /**
  * Permission flags interface for company operations
+ * Only contains permission-based access control flags, not role information
  */
 export interface CompanyPermissionFlags {
     canViewAccount: boolean;
@@ -30,4 +31,3 @@ export interface CompanyPermissionFlags {
     canViewRoles: boolean;
     canManageRoles: boolean;
 }
-//# sourceMappingURL=companyPermission.types.d.ts.map

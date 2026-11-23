@@ -21,48 +21,39 @@ export const setGuestShippingAddress = (customerAddress, isSelectableState) => {
 };
 
 export const setGuestBillingAddress = (customerAddress, isSelectableState) => {
-  cy.wait(1000);
   cy.get(fields.billingFormFirstName)
     .should('not.be.disabled')
     .clear()
     .type(customerAddress.firstName, { force: true });
-  cy.wait(1000);
   cy.get(fields.billingFormLastName)
     .should('not.be.disabled')
     .clear()
     .type(customerAddress.lastName, { force: true });
-  cy.wait(1000);
   cy.get(fields.billingFormStreet)
     .should('not.be.disabled')
     .clear()
     .type(customerAddress.street, { force: true });
-  cy.wait(1000);
   cy.get(fields.billingFormStreet1)
     .should('not.be.disabled')
     .clear()
     .type(customerAddress.street1, { force: true });
   if (isSelectableState) {
-    cy.wait(1000);
     cy.get(fields.billingFormState)
       .should('not.be.disabled')
       .select(customerAddress.region, { force: true });
   } else {
-    cy.wait(1000);
     cy.get(fields.billingFormInputState)
       .should('not.be.disabled')
       .type(customerAddress.region, { force: true });
   }
-  cy.wait(1000);
   cy.get(fields.billingFormCity)
     .should('not.be.disabled')
     .clear()
     .type(customerAddress.city, { force: true });
-  cy.wait(1000);
   cy.get(fields.billingFormPostCode)
     .should('not.be.disabled')
     .clear()
     .type(customerAddress.postCode, { force: true });
-  cy.wait(1000);
   cy.get(fields.billingFormTelephone)
     .should('not.be.disabled')
     .clear()
@@ -74,7 +65,10 @@ export const uncheckBillToShippingAddress = () => {
 };
 
 export const placeOrder = () => {
-  cy.get(fields.placeOrderButton).should('be.visible');
+  // Wait for the button to be both visible and enabled — it stays disabled
+  // until payment details have finished validating/tokenizing, so this is the
+  // deterministic anchor that replaces fixed waits before placing the order.
+  cy.get(fields.placeOrderButton).should("be.visible").and("not.be.disabled");
   cy.get(fields.placeOrderButton).click();
 };
 
@@ -123,17 +117,19 @@ export const setPaymentMethod = (paymentMethod) => {
   cy.get(fields.paymentMethods).contains(paymentMethod.name).click();
   if (paymentMethod.name === 'Credit Card') {
     const { cc_number, cc_exp, cc_cid } = paymentMethod.params;
-    cy.wait(5000);
-    cy.getIFrameField(
-      fields.creditCardNumberIFrame,
-      fields.creditCardNumber,
-    ).type(cc_number);
-    cy.getIFrameField(fields.creditCardExpIFrame, fields.creditCardExp).type(
-      cc_exp,
-    );
-    cy.getIFrameField(fields.creditCardCvvIFrame, fields.creditCardCvv).type(
-      cc_cid,
-    );
+    // The hosted payment-services dropin mounts its iframes and then re-renders
+    // them once it finishes loading. Assert each field is visible before typing
+    // so Cypress requeries past the re-render instead of grabbing a stale
+    // (about-to-detach) iframe reference.
+    cy.getIFrameField(fields.creditCardNumberIFrame, fields.creditCardNumber)
+      .should('be.visible')
+      .type(cc_number);
+    cy.getIFrameField(fields.creditCardExpIFrame, fields.creditCardExp)
+      .should('be.visible')
+      .type(cc_exp);
+    cy.getIFrameField(fields.creditCardCvvIFrame, fields.creditCardCvv)
+      .should('be.visible')
+      .type(cc_cid);
   }
 };
 
@@ -142,15 +138,30 @@ export function checkTermsAndConditions() {
   cy.get(fields.termsAndConditionsCheckbox).should('be.checked');
 }
 
+// Types into a gift-options field that may re-mount after a checkbox toggle.
+// Cypress .type() does not retry, so a re-mount can drop the first keystroke.
+// This re-queries the (possibly re-mounted) input and retypes if the value
+// didn't fully land, making the fill deterministic.
+const typeGiftOptionField = (selector, value) => {
+  cy.get(selector).should('be.visible').click().clear().type(value, { delay: 50 });
+  cy.get(selector)
+    .invoke('val')
+    .then((val) => {
+      if (val !== value) {
+        cy.get(selector).clear().type(value, { delay: 50 });
+      }
+    });
+  cy.get(selector).should('have.value', value).blur();
+};
+
 export const fillGiftOptiosForm = (className, type = 'order') => {
   if (type === 'product') {
-    cy.wait(3000);
-    cy.get(className).contains('Gift options').click();
+    cy.get(className).contains('Gift options').should('be.visible').click();
   }
 
   if (type === 'order') {
-    cy.wait(3000);
-
+    // These dropin checkboxes are visually-hidden inputs (hence force click);
+    // cy.get retries for existence and the trailing should('be.checked') confirms.
     cy.get(`${className} ${fields.giftOptionCardIncludedCheckBox}`)
       .click({
         force: true,
@@ -158,57 +169,58 @@ export const fillGiftOptiosForm = (className, type = 'order') => {
       .should('be.checked');
   }
 
-  cy.wait(2000);
   cy.get(`${className} ${fields.giftOptionWrapCheckBox}`)
     .click({
       force: true,
     })
     .should('be.checked');
 
-  cy.wait(2000);
-  cy.get(`${className} ${fields.giftOptionRecipientName}`)
-    .type('giftOptionRecipientName')
-    .should('have.value', 'giftOptionRecipientName')
-    .blur();
-  cy.wait(2000);
-  cy.get(`${className} ${fields.giftOptionSenderName}`)
-    .type('giftOptionSenderName')
-    .should('have.value', 'giftOptionSenderName')
-    .blur();
-  cy.wait(2000);
-  cy.get(`${className} ${fields.giftOptionMessage}`)
-    .type('giftOptionMessage')
-    .should('have.value', 'giftOptionMessage')
-    .blur(); // Added .blur() here
-  cy.wait(4000);
+  // Toggling the checkboxes above re-mounts the recipient input, which can drop
+  // the first keystroke. typeGiftOptionField re-queries and retypes if the value
+  // didn't fully land, keeping the fill deterministic.
+  typeGiftOptionField(
+    `${className} ${fields.giftOptionRecipientName}`,
+    'giftOptionRecipientName',
+  );
+  typeGiftOptionField(
+    `${className} ${fields.giftOptionSenderName}`,
+    'giftOptionSenderName',
+  );
+  typeGiftOptionField(
+    `${className} ${fields.giftOptionMessage}`,
+    'giftOptionMessage',
+  );
 
-  cy.get(className).contains('Customize').click();
-  cy.get(`.cart-gift-options-view__modal-grid-item img`).eq(1).click();
-  cy.contains('.dropin-button--primary', 'Apply').click();
+  cy.get(className).contains('Customize').should('be.visible').click();
+  // Wait for the wrap-design modal to render before selecting an image and
+  // applying; clicking before the grid loads silently skips the selection so
+  // the gift-wrap charge never appears in the order summary.
+  cy.get(`.cart-gift-options-view__modal-grid-item img`)
+    .eq(1)
+    .should('be.visible')
+    .click();
+  cy.contains('.dropin-button--primary', 'Apply')
+    .should('be.visible')
+    .click();
 };
 
 export const fillGiftOptiosMessageForm = (className, type = 'order') => {
-  cy.wait(2000);
   if (type === 'product') {
-    cy.get(className).contains('Gift options').click();
+    cy.get(className).contains('Gift options').should('be.visible').click();
   }
 
-  cy.wait(2000);
-
-  cy.get(`${className} ${fields.giftOptionRecipientName}`)
-    .type('giftOptionRecipientName')
-    .should('have.value', 'giftOptionRecipientName')
-    .blur();
-  cy.wait(2000);
-  cy.get(`${className} ${fields.giftOptionSenderName}`)
-    .type('giftOptionSenderName')
-    .should('have.value', 'giftOptionSenderName')
-    .blur();
-  cy.wait(2000);
-  cy.get(`${className} ${fields.giftOptionMessage}`)
-    .type('giftOptionMessage')
-    .should('have.value', 'giftOptionMessage')
-    .blur(); // Added .blur() here
+  typeGiftOptionField(
+    `${className} ${fields.giftOptionRecipientName}`,
+    'giftOptionRecipientName',
+  );
+  typeGiftOptionField(
+    `${className} ${fields.giftOptionSenderName}`,
+    'giftOptionSenderName',
+  );
+  typeGiftOptionField(
+    `${className} ${fields.giftOptionMessage}`,
+    'giftOptionMessage',
+  );
 };
 
 export const fillGiftOptiosFormEmpty = (className) => {
@@ -425,17 +437,11 @@ export const navigateToCompanyRegistration = () => {
 export const editProductOptions = (selectedOption, updateProductOptionTo) => {
   cy.contains('Edit').click();
   cy.get('.modal-content').should('be.visible');
-  cy.get('select')
-    .eq(1)
-    .find('option:selected')
-    .should('have.text', selectedOption);
-  cy.get('.dropin-incrementer__increase-button').eq(1).click();
-  cy.get('.dropin-incrementer__input').eq(1).should('have.value', '2');
-  cy.get('select').eq(1).select(updateProductOptionTo);
-  cy.get('select')
-    .eq(1)
-    .find('option:selected')
-    .should('have.text', updateProductOptionTo);
+  cy.get('.modal-content').assertSelectedProductOption('color', selectedOption);
+  cy.get('.modal-content').find('.dropin-incrementer__increase-button').click();
+  cy.get('.modal-content').find('.dropin-incrementer__input').should('have.value', '2');
+  cy.get('.modal-content').selectProductOption('color', updateProductOptionTo);
+  cy.get('.modal-content').assertSelectedProductOption('color', updateProductOptionTo);
   cy.contains('Update in Cart').should('be.visible').click();
 };
 
@@ -445,15 +451,38 @@ export const typeInFieldBasedOnText = (textToSearch, enterInput) => {
 
 // B2B Purchase Orders Actions
 export const login = (user, urls) => {
-  cy.visit(urls.login);
-  cy.get(fields.poLoginForm).within(() => {
-    cy.get(fields.poEmailInput).type(user.email);
-    cy.wait(1500);
-    cy.get(fields.poPasswordInput).type(user.password);
-    cy.wait(1500);
-    cy.get(fields.poSubmitButton).click();
-    cy.wait(8000);
-  });
+  const submitLoginForm = () => {
+    cy.clearCookies();
+    cy.clearLocalStorage();
+    cy.visit(urls.login);
+    cy.get(fields.poLoginForm).within(() => {
+      cy.get(fields.poEmailInput).type(user.email);
+      cy.wait(1500);
+      cy.get(fields.poPasswordInput).type(user.password);
+      cy.wait(1500);
+      cy.get(fields.poSubmitButton).click();
+      cy.wait(8000);
+    });
+  };
+
+  submitLoginForm();
+
+  // Retry up to 2 more times if account is not yet active (Magento takes time to fully
+  // activate REST-created accounts on ACO — each retry clears state and waits 20s).
+  const retryIfNeeded = (attemptsLeft) => {
+    cy.url().then((url) => {
+      if (!url.includes(urls.account) && attemptsLeft > 0) {
+        cy.logToTerminal(`⚠️ Login failed for ${user.email} — clearing state and retrying in 20s (${attemptsLeft} attempt(s) left)...`);
+        cy.wait(20000);
+        cy.clearCookies();
+        cy.clearLocalStorage();
+        submitLoginForm();
+        retryIfNeeded(attemptsLeft - 1);
+      }
+    });
+  };
+  retryIfNeeded(2);
+
   cy.url().should('include', urls.account);
   // Waiting for session and permissions to initialize
   cy.wait(3000);
@@ -781,25 +810,24 @@ export const fillApprovalRuleForm = (rule, texts) => {
 };
 
 export const deleteApprovalRule = (ruleName) => {
-  const getRowByName = (name) => {
-    return cy.get(selectors.poTableRow).filter(`:has(:contains("${name}"))`);
-  };
+  const rowSelector = `${selectors.poTableRow}:has(:contains("${ruleName}"))`;
 
-  getRowByName(ruleName).then(($row) => {
-    cy.wrap($row).within(() => {
+  cy.get('body').then(($body) => {
+    if ($body.find(rowSelector).length === 0) {
+      cy.log(`⚠️ Approval rule "${ruleName}" not found, skipping deletion`);
+      return;
+    }
+
+    cy.get(rowSelector).within(() => {
       cy.contains('button', 'Show').click();
     });
+
+    cy.wait(2000);
+    cy.contains('button', 'Delete').click();
+    cy.wait(10000);
+    cy.get(rowSelector).should('not.exist');
+    cy.wait(5000);
   });
-
-  cy.wait(2000);
-
-  cy.contains('button', 'Delete').click();
-
-  cy.wait(10000);
-
-  getRowByName(ruleName).should('not.exist');
-
-  cy.wait(5000);
 };
 
 // Quick Order Variants Grid Actions
@@ -907,4 +935,128 @@ export const onVariantsUpdated = (callback) => {
       });
     }
   });
+};
+
+// ==========================================================================
+// Company Address Book (B2B) Actions
+// ==========================================================================
+
+/**
+ * Navigates to the My Company page and opens the company address book.
+ * Confirmed nav link text is "Company Addresses" (see the account sidebar
+ * screenshot from Test 6) — NOT a generic /address/i match, which can
+ * instead match the personal "Addresses" sidebar item that every logged-in
+ * customer sees regardless of company role, opening the wrong (B2C) form.
+ */
+export const openCompanyAddressBook = (urls) => {
+  // Navigates by URL rather than by clicking a "Company Addresses" nav item.
+  // That item is authored content and is absent from some content sources
+  // (e.g. boilerplate-b2b-accs), so clicking it made the whole suite depend on
+  // which site the run happens to be pointed at. Both nav items lead here
+  // anyway, and the page renders whichever address dataset the customer's
+  // permissions allow.
+  cy.visit(urls.addresses);
+  cy.wait(3000);
+};
+
+/**
+ * Opens the Edit Company Profile form and toggles the Address Book settings
+ * checkboxes (addressBookEnabled / customShippingAddressEnabled), then saves.
+ * Pass `undefined` for a flag to leave its current state untouched.
+ */
+export const toggleCompanyAddressBookSettings = (
+  urls,
+  { addressBookEnabled, customShippingAddressEnabled } = {},
+) => {
+  cy.visit(urls.companyProfile);
+  cy.wait(2000);
+  cy.contains('button', 'Edit').should('be.visible').click();
+  cy.wait(1000);
+
+  if (addressBookEnabled !== undefined) {
+    cy.get(fields.companyProfileAddressBookEnabledCheckbox).then(($checkbox) => {
+      if ($checkbox.prop('checked') !== addressBookEnabled) {
+        cy.wrap($checkbox).click({ force: true });
+      }
+    });
+  }
+
+  if (customShippingAddressEnabled !== undefined) {
+    cy.get(fields.companyProfileCustomShippingEnabledCheckbox).then(($checkbox) => {
+      if ($checkbox.prop('checked') !== customShippingAddressEnabled) {
+        cy.wrap($checkbox).click({ force: true });
+      }
+    });
+  }
+
+  cy.contains('button', 'Save').should('be.visible').click();
+  cy.wait(2000);
+};
+
+/**
+ * Fills the common address fields shared by the B2C and B2B address forms
+ * (same AddressForm dropin component). Unlike `createAddress`, this does NOT
+ * touch the B2C-only `defaultShipping` checkbox — the B2B form uses different
+ * field names (`default_shipping`/`default_billing`/`address_type_*`, see
+ * fields.addressBookDefaultShippingCheckbox etc.), handled separately by the
+ * caller so the correct real fields are exercised.
+ */
+export const fillCompanyAddressFields = (address) => {
+  cy.get(fields.fieldUserFirstName).clear().type(address.firstName);
+  cy.get(fields.fieldUserLastName).clear().type(address.lastName);
+  cy.get(fields.fieldUserStreet).clear().type(address.street);
+  cy.get(fields.fieldUserStreet2).clear().type(address.streetMultiline_2);
+  cy.get(fields.fieldUserSelectCountry).select(address.countryCode);
+
+  // Selecting a country with a predefined region list (e.g. US) triggers an
+  // async GET_REGIONS reload that swaps the region field from <input> to
+  // <select> shortly after — interacting with it too soon fails with
+  // "the page updated while this command was executing" because the node
+  // gets replaced mid-command. Wait for it to settle, then use whichever
+  // element is actually present (mirrors the select-vs-swatch detection
+  // already used by the `selectProductOption` custom command).
+  cy.wait(1500);
+  cy.get('body').then(($body) => {
+    if ($body.find(fields.fieldUserSelectRegion).length) {
+      cy.get(fields.fieldUserSelectRegion).select(address.region);
+    } else {
+      cy.get(fields.fieldUserTextRegion).clear().type(address.region);
+    }
+  });
+
+  cy.get(fields.fieldUserCity).clear().type(address.city);
+  cy.get(fields.fieldUserPhone).clear().type(address.telephone);
+  cy.get(fields.fieldUserPostCode).clear().type(address.postcode);
+  cy.get(fields.fieldUserVatId).clear().type(address.vatId);
+
+  // Nickname only exists on the B2B company address form, not the personal
+  // (B2C) address form — check the field is actually present before typing,
+  // not just that the fixture happens to have a nickname value, since the
+  // same fixtures get reused for personal-address creation too (Address
+  // Book disabled) where this input doesn't render at all.
+  if (address.nickname) {
+    cy.get('body').then(($body) => {
+      if ($body.find(fields.fieldUserNickname).length) {
+        cy.get(fields.fieldUserNickname).clear().type(address.nickname);
+      }
+    });
+  }
+};
+
+/**
+ * Removes a company address card identified by text contained within it
+ * (e.g. a street or lastname fragment), confirming the removal modal.
+ */
+export const deleteCompanyAddressCard = (identifyingText, labels) => {
+  cy.get(fields.addressBookCard)
+    .contains(identifyingText)
+    .closest(fields.addressBookCard)
+    .within(() => {
+      cy.contains(labels.remove).click();
+    });
+  cy.contains(labels.removeConfirm).should('be.visible');
+  cy.get(fields.addressBookModalButtons)
+    .contains(labels.remove)
+    .click();
+  cy.wait(2000);
 };

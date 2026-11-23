@@ -1,10 +1,14 @@
+import { enableAnalyticsConsent, visitWithAnalyticsConsent } from "./consentTestSupport";
+
+enableAnalyticsConsent();
+
 /**
  * https://github.com/adobe/commerce-events/blob/main/examples/events/search-product-click.md
  *
  * Required contexts: page, storefront, searchResult
  */
 it("is sent on search bar product click", { tags: "@skipSaas" }, () => {
-  cy.visit("/");
+  visitWithAnalyticsConsent("/");
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
@@ -24,8 +28,7 @@ it("is sent on search bar product click", { tags: "@skipSaas" }, () => {
     cy.window().then((win) => {
       cy.spy(win.adobeDataLayer, "push").as("adl");
       cy.get(".nav-search-button").should("be.visible").click();
-      cy.wait(2000);
-      cy.get("#search").type("shirt");
+      cy.get("#search").should("be.visible").type("shirt");
       cy.get(".search-bar-result .dropin-product-item-card a", { timeout: 10000 })
         .first()
         .click()

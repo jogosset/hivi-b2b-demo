@@ -22,4 +22,4 @@ export * from './CustomerCompanyInfo';
 export * from './CompanyRegistration';
 export * from './CompanyCredit';
 export * from './RolesAndPermissions';
-//# sourceMappingURL=index.d.ts.map
+export * from './CompanyHierarchy';

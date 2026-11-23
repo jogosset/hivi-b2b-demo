@@ -119,6 +119,19 @@ await initializeDropin(async () => {
     fetchPlaceholders('placeholders/pdp.json'),
   ]);
 
+  // A published PDP whose SKU no longer resolves serves 200 from the content
+  // bus, so the CDN-404 redirect never runs. fetchProductData resolves null
+  // for an unknown SKU — send the shopper to the native 404 rather than
+  // mounting an empty product block. (Demo Builder warm-path guard.)
+  // The editor flags differ by template version (IS_UE, later IS_DA and IS_EW),
+  // so each is read only where the file declares it.
+  const authoring = (typeof IS_UE !== 'undefined' && IS_UE)
+    || (typeof IS_DA !== 'undefined' && IS_DA)
+    || (typeof IS_EW !== 'undefined' && IS_EW);
+  if (!product && !authoring) {
+    return loadErrorPage();
+  }
+
   const langDefinitions = {
     default: {
       ...labels,
@@ -150,7 +163,7 @@ async function preloadImageMiddleware(data) {
     let imageParams = {
       ...IMAGES_SIZES,
     };
-    if (isAemAssetsEnabled) {
+    if (isAemAssetsEnabled()) {
       url = tryGenerateAemAssetsOptimizedUrl(image, data.sku, {});
       imageParams = {
         ...imageParams,

@@ -1,5 +1,11 @@
-import { NegotiableQuoteStatus } from '../../models/negotiable-quote-model';
-
+/********************************************************************
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 export declare const mockGraphQLResponse: {
     data: {
         requestNegotiableQuote: {
@@ -617,6 +623,8 @@ export declare const mockQuoteData: {
     };
     shipping_addresses: {
         uid: string;
+        customer_address_uid: string;
+        company_address_id: null;
         firstname: string;
         lastname: string;
         company: string;
@@ -661,7 +669,7 @@ export declare const mockNegotiableQuotesResponse: {
                 name: string;
                 created_at: string;
                 updated_at: string;
-                status: NegotiableQuoteStatus;
+                status: any;
                 buyer: {
                     firstname: string;
                     lastname: string;
@@ -740,4 +748,3 @@ export declare const mockNullNegotiableQuotesResponse: {
         negotiableQuotes: null;
     };
 };
-//# sourceMappingURL=negotiableQuoteData.d.ts.map

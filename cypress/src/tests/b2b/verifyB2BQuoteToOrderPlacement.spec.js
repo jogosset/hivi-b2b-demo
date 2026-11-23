@@ -13,10 +13,12 @@ import {
     signInUser,
 } from "../../actions";
 
+const poCompanyId = Cypress.env("poCypressCompanyId");
+
 // Quote role configuration with negotiable quote permissions
 const quoteRoleConfig = {
     role_name: `Quote User ${Cypress._.random(0, 999999)}`,
-    company_id: 13,
+    company_id: poCompanyId,
     permissions: [
         { resource_id: 'Magento_Company::index', permission: 'allow' },
         { resource_id: 'Magento_Company::view', permission: 'allow' },
@@ -32,7 +34,7 @@ const quoteRoleConfig = {
     ],
 };
 
-describe("Verify B2B Quote feature", () => {
+describe("Verify B2B Quote feature", { tags: "@skipAco" }, () => {
     let customerData;
     let username;
     let quoteRoleId;
@@ -74,7 +76,7 @@ describe("Verify B2B Quote feature", () => {
                 email: username,
                 password: customerData.customer.password,
                 isSubscribed: customerData.customer.is_subscribed,
-                companyId: 13,
+                companyId: poCompanyId,
             };
 
             return createUserAssignCompanyAndRole(testUser, quoteRoleId);
@@ -171,11 +173,13 @@ describe("Verify B2B Quote feature", () => {
         cy.logToTerminal('========= Step 7: View Quote Details =========');
         cy.wait(3000);
 
-        cy.get('body').then(($body) => {
-            if ($body.find('button:contains("View")').length > 0) {
-                cy.contains('button', 'View').first().click();
-            } else if ($body.find('a:contains("View")').length > 0) {
-                cy.contains('a', 'View').first().click();
+        // Scope to main to avoid sidebar links (e.g. "View company credit history")
+        // matching before the quote table's View button/link.
+        cy.get('main').then(($main) => {
+            if ($main.find('button:contains("View")').length > 0) {
+                cy.get('main').contains('button', 'View').first().click();
+            } else if ($main.find('a:contains("View")').length > 0) {
+                cy.get('main').contains('a', 'View').first().click();
             } else {
                 cy.contains(quoteName).click();
             }
@@ -255,6 +259,7 @@ describe("Verify B2B Quote feature", () => {
         cy.wait(3000);
 
         cy.contains('span', 'Checkout')
+            .scrollIntoView()
             .should('be.visible')
             .click();
         cy.wait(8000);

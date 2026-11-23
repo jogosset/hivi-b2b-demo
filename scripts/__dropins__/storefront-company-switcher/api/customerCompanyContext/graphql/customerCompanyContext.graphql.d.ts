@@ -14,5 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const GET_CUSTOMER_COMPANY_CONTEXT = "\n  query GET_CUSTOMER_COMPANIES {\n    customer {\n      companies {\n        items {\n          name\n          id\n          status\n        }\n      }\n    }\n    company {\n      name\n      id\n      status\n    }\n    customerGroup {\n      uid\n    }\n  }\n";
-//# sourceMappingURL=customerCompanyContext.graphql.d.ts.map
+export declare const GET_CUSTOMER_COMPANY_CONTEXT: string;

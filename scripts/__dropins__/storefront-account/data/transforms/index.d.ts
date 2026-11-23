@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -23,4 +23,6 @@ export * from './transform-order-history-list';
 export * from './transform-store-config';
 export * from './transform-account';
 export * from './transform-stored-payment-tokens';
-//# sourceMappingURL=index.d.ts.map
+export * from './transform-admin-assistance-actions';
+export * from './transform-company-address';
+export * from './transform-company-address-book';

@@ -7,7 +7,7 @@ const ASSETS_ENABLED_KEY = 'public.default.commerce-assets-enabled';
 const COMMERCE_CORE_ENDPOINT_KEY = 'public.default.commerce-core-endpoint';
 const COMMERCE_ENDPOINT_KEY = 'public.default.commerce-endpoint';
 
-describe('AEM Assets enabled', { tags: ["@skipSaas", "@skipPaas"] }, () => {
+describe('AEM Assets enabled', { tags: ["@skipSaas", "@skipPaas", "@skipAco"] }, () => {
   let aemAssetsEnvironment;
   let envConfig;
 
@@ -382,14 +382,14 @@ describe('AEM Assets enabled', { tags: ["@skipSaas", "@skipPaas"] }, () => {
 
   it('[Recommendations Dropin]: should load and show AEM Assets optimized images', () => {
     // Visit products to populate "Recently Viewed" recommendations.
-    // Wait a bit to ensure data is collected by Adobe Analytics.
+    // Allow local product history to settle before the next visit.
     visitWithEagerImages('/products/gift-packaging/adb102');
     cy.wait(3000);
 
     visitWithEagerImages('/products/denim-apron/adb119');
     cy.wait(3000);
 
-    visitWithEagerImages(envConfig.prexDraft);
+    visitWithEagerImages(`${envConfig.prexDraft}?consent=accept`);
     const expectedOptions = {
       protocol: 'https://',
       environment: aemAssetsEnvironment,

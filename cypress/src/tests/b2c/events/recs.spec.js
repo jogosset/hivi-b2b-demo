@@ -1,4 +1,7 @@
 import { expectsEventWithContext } from "../../../assertions";
+import { enableAnalyticsConsent, visitWithAnalyticsConsent } from "./consentTestSupport";
+
+enableAnalyticsConsent();
 /**
  * https://github.com/adobe/commerce-events/blob/main/examples/events/recs-request-sent.md
  *   required contexts: page, storefront
@@ -15,9 +18,9 @@ import { expectsEventWithContext } from "../../../assertions";
 const RECS_URL = "/products/play-create-repeat-crewneck/adb388";
 it(
   "api-request-sent, api-response-received, unit-impression-render",
-  { tags: ["@skipSaas", "@skipPaas"] },
+  { tags: ["@skipSaas", "@skipPaas", "@skipAco"] },
   () => {
-    cy.visit(RECS_URL);
+    visitWithAnalyticsConsent(RECS_URL);
     cy.waitForResource("commerce-events-collector.js").then(() => {
       cy.window()
         .its("adobeDataLayer")
@@ -50,9 +53,9 @@ it(
   },
 );
 // Skipping until events are updated with ticket https://jira.corp.adobe.com/browse/COMOPT-421
-it("recs-unit-view", { tags: ["@skipSaas", "@skipPaas"] }, () => {
+it("recs-unit-view", { tags: ["@skipSaas", "@skipPaas", "@skipAco"] }, () => {
   cy.viewport(1440, 600);
-  cy.visit(RECS_URL);
+  visitWithAnalyticsConsent(RECS_URL);
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.get(".product-recommendations-wrapper").scrollIntoView({
       duration: 1000,
@@ -90,8 +93,8 @@ it("recs-unit-view", { tags: ["@skipSaas", "@skipPaas"] }, () => {
   });
 });
 // Skipping until events are updated with ticket https://jira.corp.adobe.com/browse/COMOPT-421
-it("recs-item-click", { tags: ["@skipSaas", "@skipPaas"] }, () => {
-  cy.visit(RECS_URL);
+it("recs-item-click", { tags: ["@skipSaas", "@skipPaas", "@skipAco"] }, () => {
+  visitWithAnalyticsConsent(RECS_URL);
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window().then((win) => {
       cy.spy(win.adobeDataLayer, "push").as("adl");
@@ -130,8 +133,8 @@ it("recs-item-click", { tags: ["@skipSaas", "@skipPaas"] }, () => {
   });
 });
 // Skipping until events are updated with ticket https://jira.corp.adobe.com/browse/COMOPT-421
-it("reqs-item-add-to-cart", { tags: ["@skipSaas", "@skipPaas"] }, () => {
-  cy.visit(RECS_URL);
+it("reqs-item-add-to-cart", { tags: ["@skipSaas", "@skipPaas", "@skipAco"] }, () => {
+  visitWithAnalyticsConsent(RECS_URL);
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window().then((win) => {
       cy.spy(win.adobeDataLayer, "push").as("adl");

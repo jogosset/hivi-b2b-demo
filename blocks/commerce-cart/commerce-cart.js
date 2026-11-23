@@ -40,6 +40,7 @@ import {
   fetchPlaceholders,
   rootLink,
   getProductLink,
+  renderCartItemPromotions,
   ACCEPTED_FILE_TYPES,
 } from '../../scripts/commerce.js';
 
@@ -294,6 +295,9 @@ export default async function decorate(block) {
         },
 
         Footer: (ctx) => {
+          // Promotion / discount rule labels
+          renderCartItemPromotions(ctx);
+
           // Edit Link
           if (ctx.item?.itemType === 'ConfigurableCartItem' && enableUpdatingProduct === 'true') {
             const editLink = document.createElement('div');
@@ -301,6 +305,9 @@ export default async function decorate(block) {
 
             UI.render(Button, {
               children: placeholders?.Global?.CartEditButton,
+              // Every cart item renders its own Edit button, so the accessible
+              // name must include the product name to distinguish them.
+              'aria-label': `${placeholders?.Global?.CartEditButton} ${ctx.item.name}`,
               variant: 'tertiary',
               size: 'medium',
               icon: h(Icon, { source: 'Edit' }),
@@ -346,7 +353,6 @@ export default async function decorate(block) {
 
     // Order Summary
     provider.render(OrderSummary, {
-      routeProduct: createProductLink,
       routeCheckout: checkoutURL ? () => rootLink(checkoutURL) : undefined,
       slots: {
         EstimateShipping: async (ctx) => {

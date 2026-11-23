@@ -8,27 +8,29 @@ export const assertCartSummaryProduct =
     productQty,
     productPrice,
     totalPrice,
+    // productPosition kept for API compatibility but unused — assertions are
+    // now SKU-based so they work regardless of cart item order (PaaS vs SaaS)
+    // eslint-disable-next-line no-unused-vars
     productPosition,
   ) =>
-  (elem = ".commerce-cart-wrapper") => {
-    cy.get(`${elem} .dropin-cart-item__title`)
-      .eq(productPosition)
-      .should("contain", productName);
-    cy.get(`${elem} .dropin-cart-item__sku`)
-      .eq(productPosition)
-      .should("contain", productSku);
-
-    if (elem === ".commerce-cart-wrapper") {
-      cy.get(`${elem} .dropin-incrementer__input`)
-        .eq(productPosition)
-        .should("have.value", productQty);
-    }
-
-    cy.get(`${elem} .dropin-cart-item__price`).should("contain", productPrice);
-    cy.get(`${elem} .dropin-cart-item__total`)
-      .eq(productPosition)
-      .should("contain", totalPrice);
-  };
+    (elem = ".commerce-cart-wrapper") => {
+      // cy.get(parent).contains(child, text) is more reliable than
+      // cy.contains(compound-selector, text) in Cypress 13 when the selector
+      // spans multiple ancestor levels. Anchors on SKU for order-independence
+      // (PaaS returns oldest-first, SaaS newest-first).
+      cy.get(elem)
+        .contains('.dropin-cart-item__sku', productSku)
+        .closest('.dropin-cart-item')
+        .within(() => {
+          cy.get('.dropin-cart-item__title').should("contain", productName);
+          cy.get('.dropin-cart-item__sku').should("contain", productSku);
+          if (elem === ".commerce-cart-wrapper") {
+            cy.get('.dropin-incrementer__input').should("have.value", productQty);
+          }
+          cy.get('.dropin-cart-item__total').should("contain", totalPrice);
+        });
+      cy.get(`${elem} .dropin-cart-item__price`).should("contain", productPrice);
+    };
 
 export const assertCartSummaryProductsOnCheckout = (
   productName,
@@ -36,23 +38,18 @@ export const assertCartSummaryProductsOnCheckout = (
   productQty,
   productPrice,
   totalPrice,
+  // eslint-disable-next-line no-unused-vars
   productPosition,
 ) => {
-  cy.get(".dropin-cart-item__title")
-    .eq(productPosition)
-    .should("contain", productName);
-  cy.get(".dropin-cart-item__sku")
-    .eq(productPosition)
-    .should("contain", productSku);
-  cy.get(".dropin-cart-item__price__quantity")
-    .eq(productPosition)
-    .should("contain", productQty);
-  cy.get(".dropin-cart-item__price")
-    .eq(productPosition)
-    .should("contain", productPrice);
-  cy.get(".dropin-cart-item__total")
-    .eq(productPosition)
-    .should("contain", totalPrice);
+  cy.contains('.dropin-cart-item__sku', productSku)
+    .closest('.dropin-cart-item')
+    .within(() => {
+      cy.get('.dropin-cart-item__title').should("contain", productName);
+      cy.get('.dropin-cart-item__sku').should("contain", productSku);
+      cy.get('.dropin-cart-item__price__quantity').should("contain", productQty);
+      cy.get('.dropin-cart-item__price').should("contain", productPrice);
+      cy.get('.dropin-cart-item__total').should("contain", totalPrice);
+    });
 };
 
 export const assertCartSummaryMisc = (itemCount) => {
@@ -93,22 +90,31 @@ export const assertTitleHasLink =
   };
 
 export const assertProductImage =
+  // eslint-disable-next-line no-unused-vars
   (productImageSrc) =>
-  (elem = ".cart-cart") => {
-    cy.get(`${elem} img[src*="${productImageSrc}"]`, { matchCase: false })
-      .should("be.visible")
-      .and(($img) => expect($img[0].naturalWidth).to.be.gt(0));
-  };
+    (elem = ".cart-cart") => {
+      // Verify at least one product image is visible and fully loaded.
+      // Checking src by filename is fragile (case differences, CDN path changes between
+      // PaaS and SaaS), and we already assert SKU/name for product identity.
+      cy.get(`${elem} img`)
+        .should('exist')
+        .and(($imgs) => {
+          const loaded = [...$imgs].filter((img) => img.naturalWidth > 0);
+          expect(loaded.length, 'at least one loaded product image').to.be.gt(0);
+        });
+    };
 
 export const assertSelectedPaymentMethod = (
   selected_payment_method,
+  // index_number is kept for backward compatibility but no longer used —
+  // finding by value is environment-agnostic (number of payment methods
+  // varies between PaaS, SaaS, and ACO).
+  // eslint-disable-next-line no-unused-vars
   index_number,
 ) => {
   cy.get(".checkout-payment-methods__methods")
-    .find('[type="radio"]')
-    .eq(index_number)
-    .should("be.checked")
-    .and("have.value", selected_payment_method);
+    .find(`[type="radio"][value="${selected_payment_method}"]`)
+    .should("be.checked");
 };
 
 export const assertOrderConfirmationCommonDetails = (
@@ -314,12 +320,18 @@ export const assertWishlistTitleHasLink =
   };
 
 export const assertWishlistProductImage =
+  // eslint-disable-next-line no-unused-vars
   (productImageSrc) =>
-  (elem = ".commerce-wishlist-wrapper") => {
-    cy.get(`${elem} img[src*="${productImageSrc}"]`, { matchCase: false })
-      .should("be.visible")
-      .and(($img) => expect($img[0].naturalWidth).to.be.gt(0));
-  };
+    (elem = ".commerce-wishlist-wrapper") => {
+      // Verify at least one image is visible and loaded; src filename check
+      // is fragile across backends (PaaS vs SaaS image CDN differences).
+      cy.get(`${elem} img`)
+        .should('exist')
+        .and(($imgs) => {
+          const loaded = [...$imgs].filter((img) => img.naturalWidth > 0);
+          expect(loaded.length, 'at least one loaded wishlist product image').to.be.gt(0);
+        });
+    };
 
 export const assertCartEmpty = () => {
   cy.get(".commerce-cart", { timeout: 10000 }).should("exist");
@@ -375,14 +387,13 @@ export const assertImageListDisplay = (selector, limit = null) => {
     imageQuery = imageQuery.filter(`:lt(${limit})`);
   }
 
-  imageQuery.each(($img) => {
-    // Scroll into view so lazy-loaded images actually load (browser loads when near viewport)
-    cy.wrap($img)
-      .scrollIntoView()
-      .should("be.visible")
-      .and(($el) => {
-        expect($el[0].naturalWidth).to.be.greaterThan(0);
-      });
+  imageQuery.each((_, index) => {
+    // Scrolling or an async redraw can replace the image node; re-query before asserting.
+    cy.get(selector).find('img').eq(index).scrollIntoView();
+    cy.get(selector).find('img').eq(index).should(($el) => {
+      expect($el).to.be.visible;
+      expect($el[0].naturalWidth).to.be.greaterThan(0);
+    });
   });
 };
 
@@ -398,6 +409,21 @@ export const assertOrderCommentsEmpty = () => {
 
 export const assertOrderCommentItem = (text) => {
   cy.get(fields.orderCommentsItem).should("exist").and("contain.text", text);
+};
+
+/**
+ * Each cart line should include the promotion-labels region (may be empty when no rules apply).
+ */
+export const assertEachCartLineHasPromotionLabelsRegion = (rootSelector) => {
+  cy.get(rootSelector).should('exist');
+  cy.get(rootSelector)
+    .find('.dropin-cart-item')
+    .should('have.length.at.least', 1);
+  cy.get(rootSelector)
+    .find('.dropin-cart-item')
+    .each(($item) => {
+      cy.wrap($item).find(fields.cartItemPromotions).should('exist');
+    });
 };
 
 export const assertSearchResults = () => {
