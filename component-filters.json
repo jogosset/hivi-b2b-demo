@@ -44,7 +44,13 @@
       "product-list-page",
       "product-recommendations",
       "targeted-block",
-      "text"
+      "text",
+      "hero-v2",
+      "product-teaser",
+      "quote",
+      "tabs",
+      "video",
+      "catalog-menu"
     ]
   },
   {
@@ -80,6 +86,18 @@
     "components": [
       "text",
       "image"
+    ]
+  },
+  {
+    "id": "tabs",
+    "components": [
+      "tabs-item"
+    ]
+  },
+  {
+    "id": "cards-jg",
+    "components": [
+      "card-jg"
     ]
   }
 ]
