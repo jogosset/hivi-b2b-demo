@@ -63,3 +63,84 @@
 <link rel="modulepreload" href="/scripts/__dropins__/tools/preact-compat.js" />
 <link rel="modulepreload" href="/scripts/__dropins__/tools/preact-hooks.js" />
 <link rel="modulepreload" href="/scripts/__dropins__/tools/components.js" />
+
+
+<!-- === Smart 404 PDP eager redirect (Demo Builder) === -->
+<script nonce="aem">
+  (function () {
+    if (document.prerendering) return;
+    var p = location.pathname;
+    // A published page reached by the recovery script's reload: take our
+    // parameters (pdpRetry, pdpFresh) back out of the address, keeping every
+    // other one as it is (the product list adds page/sort/filter itself), and
+    // without reloading. Never on the 404 page, where pdpRetry is the
+    // recovery script's loop guard.
+    var parts = location.search ? location.search.slice(1).split('&') : [];
+    var kept = parts.filter(function (kv) {
+      var k = kv.split('=')[0];
+      return k !== 'pdpRetry' && k !== 'pdpFresh';
+    });
+    if (!window.isErrorPage && kept.length !== parts.length) {
+      history.replaceState(history.state, '', p + (kept.length ? '?' + kept.join('&') : '') + location.hash);
+    }
+    var m = p.match(/^\/products\/([^/]+)\/([^/]+)$/);
+    if (m) {
+      var lc = '/products/' + m[1].toLowerCase() + '/' + m[2].toLowerCase();
+      // Mixed case: redirect to lowercase before any paint
+      if (lc !== p) {
+        location.replace(lc);
+        return;
+      }
+    } else if (!/^(?:\/[a-z0-9-]+)+$/.test(p) || p === '/404'
+      || p === '/categories/default' || p === '/products/default') {
+      // Neither a product nor a category address: not ours.
+      return;
+    }
+    // Already lowercase. If this is a 404 page (cold path: page never
+    // published), the storefront's default 404 chrome could paint before
+    // the recovery script at the end of the body runs. Hide just the
+    // <main> (not the whole body) so the storefront's header and footer
+    // — populated by scripts.js as usual — stay visible while we wait.
+    // User sees real storefront chrome around a loading area, not a
+    // blank page. On non-404 pages window.isErrorPage is undefined so
+    // we skip the hide.
+    if (window.isErrorPage && !new URLSearchParams(location.search).has('pdpRetry')) {
+      var s = document.createElement('style');
+      s.id = 'smart-404-cold-hide';
+      s.textContent = 'main { visibility: hidden; }';
+      document.head.appendChild(s);
+    }
+  })();
+</script>
+<!-- === end Smart 404 PDP eager redirect === -->
+
+
+<!-- === Demo Inspector loader (Demo Builder) === -->
+<script nonce="aem" type="module">
+  // Loads the Demo Inspector's tagging late in the page load, when
+  // scripts/delayed.js used to run: 3 s after every section of the page has
+  // loaded. Adobe's B2B template has no delayed.js, and its delayed loading
+  // waits for cookie consent; this does not.
+  const AFTER_SECTIONS_MS = 3000;
+  const POLL_MS = 250;
+  const GIVE_UP_MS = 15000;
+  const sectionsLoaded = () => !document.querySelector('main .section:not([data-section-status="loaded"])');
+  async function loadInspector() {
+    try {
+      const base = (window.hlx && window.hlx.codeBasePath) || '';
+      const { initInspector } = await import(`${base}/scripts/demo-inspector-init.js`);
+      initInspector();
+    } catch (_) { /* Inspector not available */ }
+  }
+  function whenSectionsLoaded(started) {
+    if (sectionsLoaded() || Date.now() - started > GIVE_UP_MS) {
+      setTimeout(loadInspector, AFTER_SECTIONS_MS);
+    } else {
+      setTimeout(() => whenSectionsLoaded(started), POLL_MS);
+    }
+  }
+  const start = () => whenSectionsLoaded(Date.now());
+  if (document.readyState === 'complete') start();
+  else window.addEventListener('load', start, { once: true });
+</script>
+<!-- === end Demo Inspector loader === -->
