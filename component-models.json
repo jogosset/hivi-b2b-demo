@@ -844,5 +844,9 @@
         "value": "By entering this site you agree to our Terms of Use and Privacy Policy."
       }
     ]
+  },
+  {
+    "id": "catalog-menu",
+    "fields": []
   }
 ]
